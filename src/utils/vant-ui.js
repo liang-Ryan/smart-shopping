@@ -1,4 +1,5 @@
 import Vue from 'vue'
-import { } from 'vant'
+import { Tabbar, TabbarItem } from 'vant'
 
-Vue.use()
+Vue.use(Tabbar)
+Vue.use(TabbarItem)
