@@ -7,6 +7,9 @@ import store from './store'
 // 外部组件
 import '@/utils/vant-ui'
 
+// 样式
+import '@/styles/common.less'
+
 Vue.config.productionTip = false
 
 new Vue({
