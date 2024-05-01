@@ -15,15 +15,15 @@
 
       <div class="form">
         <div class="form-item">
-          <input class="inputbar" maxlength="11" placeholder="请输入手机号码" type="text">
+          <input v-model="phoneNumber" class="inputbar" maxlength="11" placeholder="请输入手机号码" type="text">
         </div>
         <div class="form-item">
           <input v-model="imgCode" class="inputbar" maxlength="5" placeholder="请输入图形验证码" type="text">
-          <img v-if="imgUrl" :src="imgUrl" @click="getImgCode">
+          <img v-if="imgUrl" :src="imgUrl" @click="toGetImgCode">
         </div>
         <div class="form-item">
           <input class="inputbar" placeholder="请输入短信验证码" type="text">
-          <button>获取验证码</button>
+          <button @click="getMsgCode">{{ countDownSwitch ? `${currentCountDown}秒后重新发送` : '获取验证码' }}</button>
         </div>
       </div>
 
@@ -33,26 +33,81 @@
 </template>
 
 <script>
-import { getImgCode } from '@/api/login'
+import { getImgCode, getMsgCode } from '@/api/login'
+// import { Toast } from 'vant'
 
 export default {
   name: 'LoginIndex',
   data () {
     return {
+      phoneNumber: '',
+      // 图形验证码
       imgCode: '', // 输入的图形验证码
       imgUrl: '', // 图形验证码地址
-      imgKey: '' // 验证码标识
+      imgKey: '', // 图形验证码标识
+      // 短信验证
+      countDown: 60, // 短信倒计时的时长
+      currentCountDown: 60, // 当前倒计时的时长
+      countDownTimer: null, // 短信计时器ID
+      countDownSwitch: false // 判断是否发送短信
     }
   },
   async created () {
     this.getImgCode()
   },
   methods: {
+    // 图形验证码
     async getImgCode () {
       const { data: { base64, key } } = await getImgCode()
       this.imgUrl = base64
       this.imgKey = key
+    },
+    toGetImgCode () {
+      this.getImgCode()
+      this.$toast('获取图像验证码成功')
+    },
+
+    // 手机号和验证码格式验证
+    validFn () {
+      if (!/^1[3-9]\d{9}$/.test(this.phoneNumber)) {
+        this.$toast('请输入正确的手机号')
+        return false
+      }
+      if (!/^\w{4}$/.test(this.imgCode)) {
+        this.$toast('请输入正确的图形验证码')
+        return false
+      }
+      return true
+    },
+
+    // 短信验证码
+    async getMsgCode () {
+      if (this.validFn()) {
+        // 发送请求
+        const msgResult = await getMsgCode(this.imgCode, this.imgKey, this.phoneNumber)
+        this.$toast(msgResult.message)
+
+        // 开启计时器
+        // 后端接口有问题，成功和失败的状态码都为500，所以用message内容进行判断
+        if (msgResult.message === '小智提醒：测试环境短信验证码为：246810' && !this.countDownTimer && !this.countDownSwitch) {
+          this.countDownSwitch = true
+          this.countDownTimer = setInterval(() => {
+            this.currentCountDown--
+
+            // 重置计时器
+            if (this.currentCountDown <= 0) {
+              clearInterval(this.countDownTimer)
+              this.countDownTimer = null
+              this.currentCountDown = this.countDown
+              this.countDownSwitch = false
+            }
+          }, 1000)
+        }
+      }
     }
+  },
+  destroyed () {
+    clearInterval(this.countDownTimer) // 离开网页时，清除计时器
   }
 }
 </script>
