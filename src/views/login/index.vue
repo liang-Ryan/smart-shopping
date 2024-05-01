@@ -18,8 +18,8 @@
           <input class="inputbar" maxlength="11" placeholder="请输入手机号码" type="text">
         </div>
         <div class="form-item">
-          <input class="inputbar" maxlength="5" placeholder="请输入图形验证码" type="text">
-          <img src="@/assets/code.png" alt="">
+          <input v-model="imgCode" class="inputbar" maxlength="5" placeholder="请输入图形验证码" type="text">
+          <img v-if="imgUrl" :src="imgUrl" @click="getImgCode">
         </div>
         <div class="form-item">
           <input class="inputbar" placeholder="请输入短信验证码" type="text">
@@ -33,13 +33,26 @@
 </template>
 
 <script>
-import request from '@/utils/request'
+import { getImgCode } from '@/api/login'
 
 export default {
   name: 'LoginIndex',
+  data () {
+    return {
+      imgCode: '', // 输入的图形验证码
+      imgUrl: '', // 图形验证码地址
+      imgKey: '' // 验证码标识
+    }
+  },
   async created () {
-    const result = await request.get('/captcha/image')
-    console.log(result)
+    this.getImgCode()
+  },
+  methods: {
+    async getImgCode () {
+      const { data: { base64, key } } = await getImgCode()
+      this.imgUrl = base64
+      this.imgKey = key
+    }
   }
 }
 </script>
