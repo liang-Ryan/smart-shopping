@@ -33,8 +33,14 @@
 </template>
 
 <script>
+import request from '@/utils/request'
+
 export default {
-  name: 'LoginIndex'
+  name: 'LoginIndex',
+  async created () {
+    const result = await request.get('/captcha/image')
+    console.log(result)
+  }
 }
 </script>
 
