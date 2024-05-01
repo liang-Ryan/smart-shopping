@@ -14,3 +14,15 @@ export const getMsgCode = (imgCode, imgKey, phoneNumber) => {
     }
   })
 }
+
+// 登录验证
+export const login = (phoneNumber, msgCode) => {
+  return request.post('/passport/login', {
+    form: {
+      isParty: false,
+      mobile: phoneNumber,
+      partyData: {},
+      smsCode: msgCode
+    }
+  })
+}

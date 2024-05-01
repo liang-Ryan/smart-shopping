@@ -13,7 +13,7 @@
         <p>未注册的手机号登录后将自动注册</p>
       </div>
 
-      <div class="form">
+      <div>
         <div class="form-item">
           <input v-model="phoneNumber" class="inputbar" maxlength="11" placeholder="请输入手机号码" type="text">
         </div>
@@ -22,22 +22,22 @@
           <img v-if="imgUrl" :src="imgUrl" @click="toGetImgCode">
         </div>
         <div class="form-item">
-          <input class="inputbar" placeholder="请输入短信验证码" type="text">
+          <input v-model="msgCode" class="inputbar" placeholder="请输入短信验证码" type="text">
           <button @click="getMsgCode">{{ countDownSwitch ? `${currentCountDown}秒后重新发送` : '获取验证码' }}</button>
         </div>
       </div>
 
-      <div class="login-btn">登录</div>
+      <div class="login-btn" @click="login">登录</div>
     </div>
   </div>
 </template>
 
 <script>
-import { getImgCode, getMsgCode } from '@/api/login'
-// import { Toast } from 'vant'
+import { getImgCode, getMsgCode, login } from '@/api/login'
 
 export default {
   name: 'LoginIndex',
+
   data () {
     return {
       phoneNumber: '',
@@ -49,12 +49,15 @@ export default {
       countDown: 60, // 短信倒计时的时长
       currentCountDown: 60, // 当前倒计时的时长
       countDownTimer: null, // 短信计时器ID
-      countDownSwitch: false // 判断是否发送短信
+      countDownSwitch: false, // 判断是否发送短信
+      msgCode: '' // 短信验证码
     }
   },
+
   async created () {
     this.getImgCode()
   },
+
   methods: {
     // 图形验证码
     async getImgCode () {
@@ -68,7 +71,7 @@ export default {
     },
 
     // 手机号和验证码格式验证
-    validFn () {
+    validFn (msg) {
       if (!/^1[3-9]\d{9}$/.test(this.phoneNumber)) {
         this.$toast('请输入正确的手机号')
         return false
@@ -104,8 +107,31 @@ export default {
           }, 1000)
         }
       }
+    },
+
+    // 登录
+    async login () {
+      if (!this.validFn()) {
+        return
+      }
+      if (!/^\d{6}$/.test(this.msgCode)) {
+        this.$toast('请输入6位短信验证码')
+        return
+      }
+
+      // 发起请求
+      const loginResult = await login(this.phoneNumber, this.msgCode)
+      this.$toast(loginResult.message)
+      if (loginResult.status === 200) {
+        console.log(loginResult)
+        setTimeout(() => {
+          console.log('页面跳转')
+          this.$router.push('/')
+        }, 1500)
+      }
     }
   },
+
   destroyed () {
     clearInterval(this.countDownTimer) // 离开网页时，清除计时器
   }
