@@ -91,7 +91,7 @@ export default {
         this.$toast(msgResult.message)
 
         // 开启计时器
-        // 后端接口有问题，成功和失败的状态码都为500，所以用message内容进行判断
+        // 短信验证码后端接口有问题，获取不到成功响应，无法采用status统一判断，采用message内容进行判断
         if (msgResult.message === '小智提醒：测试环境短信验证码为：246810' && !this.countDownTimer && !this.countDownSwitch) {
           this.countDownSwitch = true
           this.countDownTimer = setInterval(() => {
@@ -120,12 +120,11 @@ export default {
       }
 
       // 发起请求
-      const loginResult = await login(this.phoneNumber, this.msgCode)
-      this.$toast(loginResult.message)
-      if (loginResult.status === 200) {
-        console.log(loginResult)
+      const loginResponse = await login(this.phoneNumber, this.msgCode)
+      this.$store.commit('user/setUserInfo', loginResponse.data)
+      this.$toast(loginResponse.message)
+      if (loginResponse.status === 200) {
         setTimeout(() => {
-          console.log('页面跳转')
           this.$router.push('/')
         }, 1500)
       }
