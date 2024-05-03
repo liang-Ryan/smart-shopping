@@ -43,7 +43,13 @@ import { getSearchPageDetail } from '@/api/search'
 export default {
   name: 'SearchListIndex',
   created () {
-    this.getDetail({ sortType: 'all', sortPrice: '0', categoryId: this.categoryId, goodsName: this.goodsName, page: this.page })
+    this.getDetail({
+      sortType: 'all',
+      sortPrice: '0',
+      categoryId: this.categoryId,
+      goodsName: this.goodsName,
+      page: this.page
+    })
   },
   data () {
     return {

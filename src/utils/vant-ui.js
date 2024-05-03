@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { Tabbar, TabbarItem, NavBar, Toast, Search, Swipe, SwipeItem, Grid, GridItem, Icon } from 'vant'
+import { Tabbar, TabbarItem, NavBar, Toast, Search, Swipe, SwipeItem, Grid, GridItem, Icon, rate } from 'vant'
 
 // login页面
 Vue.use(Tabbar)
@@ -17,3 +17,6 @@ Vue.use(Grid)
 
 // 搜索页面
 Vue.use(Icon)
+
+// 商品详情
+Vue.use(rate)
