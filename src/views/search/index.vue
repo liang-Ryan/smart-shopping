@@ -30,7 +30,7 @@ export default {
   data () {
     return {
       history: getLocalSearchHistory(),
-      searchContent: ''
+      searchContent: this.$route.query.search || ''
     }
   },
   methods: {

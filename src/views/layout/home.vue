@@ -9,7 +9,7 @@
       readonly
       shape="round"
       background="#f1f1f2"
-      placeholder="请在此输入搜索关键词"
+      placeholder="请输入搜索关键词"
       @click="$router.push('/search')"
     />
 
@@ -48,12 +48,12 @@
 
 <script>
 import GoodsItem from '@/components/GoodsItem.vue'
-import { getPageDetail } from '@/api/home'
+import { getHomePageDetail } from '@/api/home'
 
 export default {
   name: 'HomePage',
   created () {
-    this.getPageDetail()
+    this.getDetail()
   },
   data () {
     return {
@@ -64,8 +64,8 @@ export default {
     }
   },
   methods: {
-    async getPageDetail () {
-      const { data: { pageData: { items } } } = await getPageDetail()
+    async getDetail () {
+      const { data: { pageData: { items } } } = await getHomePageDetail()
       this.swipeBannerList = items[1].data
       this.gridList = items[3].data
       this.bannerImgUrl = items[4].data[0].imgUrl
