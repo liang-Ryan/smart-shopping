@@ -21,12 +21,15 @@
     </van-swipe>
 
     <!-- 导航 -->
+    <!--
+      后端没有提供对应导航类目与分类页对应项目的id，无法跳转到分类页对应项目
+    -->
     <van-grid column-num="5" icon-size="40">
       <van-grid-item
         v-for="(item, index) in gridList" :key="index"
         :icon="item.imgUrl"
         :text="item.text"
-        @click="$router.push('/category')"
+        @click="$router.push(`/category?categoryId=${index}`)"
       />
     </van-grid>
 
@@ -70,6 +73,7 @@ export default {
       this.gridList = items[3].data
       this.bannerImgUrl = items[4].data[0].imgUrl
       this.goodsList = items[6].data
+      console.log(this.gridList)
     }
   },
   components: {

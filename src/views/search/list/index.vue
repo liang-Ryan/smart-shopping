@@ -24,10 +24,10 @@
 
     <!-- 排序选项按钮 -->
     <div class="sort-btns">
-      <div class="sort-item" @click="getDetail({ sortType: 'all', sortPrice: '0', goodsName: $route.query.search, page })"
+      <div class="sort-item" @click="getDetail({ sortType: 'all', sortPrice: '0', categoryId, goodsName, page })"
       >综合</div>
-      <div class="sort-item" @click="getDetail({ sortType: 'sales', sortPrice: '0', goodsName: $route.query.search, page })">销量</div>
-      <div class="sort-item" @click="getDetail({ sortType: 'price', sortPrice, goodsName: $route.query.search, page })">价格</div>
+      <div class="sort-item" @click="getDetail({ sortType: 'sales', sortPrice: '0', categoryId, goodsName, page })">销量</div>
+      <div class="sort-item" @click="getDetail({ sortType: 'price', sortPrice, categoryId, goodsName, page })">价格</div>
     </div>
 
     <div class="goods-list">
@@ -43,12 +43,17 @@ import { getSearchPageDetail } from '@/api/search'
 export default {
   name: 'SearchListIndex',
   created () {
-    this.getDetail({ sortType: 'all', sortPrice: '0', goodsName: this.$route.query.search, page: this.page })
+    this.getDetail({ sortType: 'all', sortPrice: '0', categoryId: this.categoryId, goodsName: this.goodsName, page: this.page })
   },
   data () {
     return {
+      // 商品列表
       goodsList: [],
+
+      // 查询参数
       sortPrice: '0',
+      categoryId: this.$route.query.categoryId || '',
+      goodsName: this.$route.query.search || '',
       page: '1'
     }
   },
