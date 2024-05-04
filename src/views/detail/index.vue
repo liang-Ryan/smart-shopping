@@ -68,13 +68,44 @@
         <van-icon name="shopping-cart-o" />
         <span>购物车</span>
       </div>
-      <div class="btn-add">加入购物车</div>
-      <div class="btn-buy" @click="$router.push('/pay')">立刻购买</div>
+      <div class="btn-add" @click="popSheet('cart')">加入购物车</div>
+      <div class="btn-buy" @click="popSheet('pay')">立刻购买</div>
     </div>
+
+    <!-- 动作面板 -->
+    <van-action-sheet v-model="showSheet" :title="sheetTitle">
+      <div class="action-sheet">
+        <div class="sheet-content">
+          <div class="left">
+            <img :src="detail.goods_image" alt="">
+          </div>
+          <div class="right">
+            <div class="price">
+              <span class="price-icon">￥</span>
+              <span>{{ detail.goods_price_min }}</span>
+            </div>
+            <div>
+              <span>库存</span>
+              <span>{{ detail.stock_total }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="num-box">
+          <span>数量</span>
+          <counter v-model="count"></counter>
+        </div>
+        <div v-if="detail.stock_total > 0">
+          <div class="btn-cart" v-if="sheetTitle === '加入购物车'">加入购物车</div>
+          <div class="btn-pay" v-else>立刻购买</div>
+        </div>
+        <div class="btn-none" v-else>该商品已被抢完</div>
+      </div>
+    </van-action-sheet>
   </div>
 </template>
 
 <script>
+import counter from '@/components/counter.vue'
 import { getGoodsDetail, getGoodsService, getGoodsComment } from '@/api/goods-detail'
 import defaultImg from '@/assets/default-avatar.png'
 
@@ -100,7 +131,14 @@ export default {
       defaultImg,
 
       // 轮播图
-      current: 1
+      current: 1,
+
+      // 动作面板
+      showSheet: false,
+      sheetTitle: '加入购物车',
+
+      // 购买数量
+      count: 1
     }
   },
   computed: {
@@ -132,7 +170,21 @@ export default {
     // 轮播图计数
     onChange () {
       this.current >= 4 ? this.current = 1 : this.current++
+    },
+
+    // 动作面板
+    popSheet (action) {
+      if (action === 'cart') {
+        this.sheetTitle = '加入购物车'
+      } else if (action === 'pay') {
+        this.sheetTitle = '立刻购买'
+        console.log(this.sheetTitle)
+      }
+      this.showSheet = true
     }
+  },
+  components: {
+    counter
   }
 }
 </script>
@@ -294,6 +346,58 @@ export default {
 
     .btn-buy {
       background-color: #fe5630;
+    }
+  }
+
+  .action-sheet {
+    .sheet-content {
+      display: flex;
+
+      .left {
+        padding: 10px;
+
+        img {
+          width: 90px;
+          height: 90px;
+        }
+      }
+
+      .right {
+        flex: 1;
+        padding: 10px;
+
+        .price {
+          color: #fe560a;
+          font-size: 24px;
+          .price-icon {
+            margin-right:5px;
+            font-size: 14px;
+          }
+        }
+      }
+    }
+
+    .num-box {
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .btn-cart, .btn-pay, .btn-none {
+      height: 40px;
+      line-height: 40px;
+      background-color: rgb(255, 148, 2);
+      margin: 20px;
+      border-radius: 20px;
+      color: rgb(255, 255, 255);
+      text-align: center;
+    }
+    .btn-pay {
+      background-color: #fe5630;
+    }
+    .btn-none {
+      background-color: #cccccc;
     }
   }
 }
