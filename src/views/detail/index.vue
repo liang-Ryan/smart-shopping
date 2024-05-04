@@ -95,8 +95,8 @@
           <counter v-model="count"></counter>
         </div>
         <div v-if="detail.stock_total > 0">
-          <div class="btn-cart" v-if="sheetTitle === '加入购物车'">加入购物车</div>
-          <div class="btn-pay" v-else>立刻购买</div>
+          <div class="btn-cart" v-if="sheetTitle === '加入购物车'" @click="order('cart')">加入购物车</div>
+          <div class="btn-pay" v-else  @click="order('pay')">立刻购买</div>
         </div>
         <div class="btn-none" v-else>该商品已被抢完</div>
       </div>
@@ -133,12 +133,15 @@ export default {
       // 轮播图
       current: 1,
 
+      // 购买数量
+      count: 1,
+
       // 动作面板
       showSheet: false,
       sheetTitle: '加入购物车',
 
-      // 购买数量
-      count: 1
+      // 计时器
+      addCartTimeout: ''
     }
   },
   computed: {
@@ -181,10 +184,39 @@ export default {
         console.log(this.sheetTitle)
       }
       this.showSheet = true
+    },
+
+    // 加入购物车
+    order (type) {
+      console.log(this.$store.getters.token)
+
+      if (this.$store.getters.token) {
+        if (type === 'cart') {
+          // msg = '加入购物车'
+        } else if (type === 'pay') {
+          // msg = '进行购买'
+        } else {
+          console.log('type值错误')
+        }
+      } else {
+        this.$toast('请登录后再进行操作')
+        this.addCartTimeout = setTimeout(() => {
+          this.router.push('/login')
+          // this.$router.replace({
+          //   path: '/login',
+          //   query: {
+          //     backUrl: this.$route.fullPath // 传递参数
+          //   }
+          // })
+        }, 2000)
+      }
     }
   },
   components: {
     counter
+  },
+  destroyed () {
+    clearTimeout(this.addCartTimeout)
   }
 }
 </script>

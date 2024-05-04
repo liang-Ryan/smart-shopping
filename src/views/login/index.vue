@@ -125,7 +125,8 @@ export default {
       this.$toast(loginResponse.message)
       if (loginResponse.status === 200) {
         setTimeout(() => {
-          this.$router.push('/')
+          this.$router.replace(this.$route.query.backUrl || '/') // replace在不登录，直接返回上一页时，会回到搜索页
+          this.$router.go(-1)
         }, 1500)
       }
     }
