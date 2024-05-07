@@ -73,7 +73,6 @@ export default {
       this.gridList = items[3].data
       this.bannerImgUrl = items[4].data[0].imgUrl
       this.goodsList = items[6].data
-      console.log(this.gridList)
     }
   },
   components: {

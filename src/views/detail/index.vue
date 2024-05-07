@@ -24,7 +24,7 @@
       </div>
       <div class="msg text-ellipsis-2">{{ detail.goods_name }}</div>
 
-      <div class="service">
+      <div class="service" @click="showServiceSheet = true">
         <div class="left-words">
           <span v-for="item in serviceList" :key="item.service_id">
             <van-icon name="passed" />{{ item.name }}
@@ -36,24 +36,46 @@
       </div>
     </div>
 
+    <!-- 商品保障弹出面板 -->
+    <van-action-sheet class="service-sheet" v-model="showServiceSheet" title="商品保障服务">
+      <div v-for="item in serviceList" :key="item.service_id">
+        <van-icon name="passed" />{{ item.name }}
+      </div>
+    </van-action-sheet>
+
     <!-- 商品评价 -->
     <div class="comment">
       <div class="comment-title">
         <div class="left">商品评价 ({{ commentSum }}条)</div>
-        <div class="right">查看更多 <van-icon name="arrow" /> </div>
+        <div class="right" @click="showCommentList(-1, 1)">查看更多 <van-icon name="arrow" /> </div>
       </div>
       <div class="comment-list">
-        <div class="comment-item" v-for="item in commentList" :key="item.comment_id">
+        <div class="comment-item" v-for="item in firstThreeComment" :key="item.comment_id">
           <div class="top">
             <img :src="item.user.avatar_url || defaultImg" alt="">
             <div class="name">{{ item.user.nick_name }}</div>
-            <van-rate :size="16" :value="5" color="#ffd21e" void-icon="star" void-color="#eee"/>
+            <van-rate :size="16" :value="item.score / 6" color="#ffd21e" void-icon="star" void-color="#eee"/>
           </div>
           <div class="content">{{ item.content }}</div>
           <div class="time">{{ item.create_time }}</div>
         </div>
       </div>
     </div>
+
+    <!-- 商品评价弹出面板 -->
+    <van-action-sheet class="comment-sheet" v-model="showCommentSheet" title="商品评价">
+      <div class="comment-list">
+        <div class="comment-item" v-for="item in commentList" :key="item.comment_id">
+          <div class="top">
+            <img :src="item.user.avatar_url || defaultImg" alt="">
+            <div class="name">{{ item.user.nick_name }}</div>
+            <van-rate :size="16" :value="item.score / 6" color="#ffd21e" void-icon="star" void-color="#eee"/>
+          </div>
+          <div class="content">{{ item.content }}</div>
+          <div class="time">{{ item.create_time }}</div>
+        </div>
+      </div>
+    </van-action-sheet>
 
     <!-- 商品描述 -->
     <div class="content" v-html="detail.content"></div>
@@ -64,16 +86,16 @@
         <van-icon name="wap-home-o" />
         <span>首页</span>
       </div>
-      <div class="icon-cart">
-        <van-icon name="shopping-cart-o" />
+      <div class="icon-cart" @click="$router.push('/cart')">
+        <van-icon name="shopping-cart-o" :badge="cartTotal > 0 ? cartTotal : ''"/>
         <span>购物车</span>
       </div>
       <div class="btn-add" @click="popSheet('cart')">加入购物车</div>
       <div class="btn-buy" @click="popSheet('pay')">立刻购买</div>
     </div>
 
-    <!-- 动作面板 -->
-    <van-action-sheet v-model="showSheet" :title="sheetTitle">
+    <!-- 购买弹出面板 -->
+    <van-action-sheet v-model="showPaySheet" :title="paySheetTitle">
       <div class="action-sheet">
         <div class="sheet-content">
           <div class="left">
@@ -95,7 +117,7 @@
           <counter v-model="count"></counter>
         </div>
         <div v-if="detail.stock_total > 0">
-          <div class="btn-cart" v-if="sheetTitle === '加入购物车'" @click="order('cart')">加入购物车</div>
+          <div class="btn-cart" v-if="paySheetTitle === '加入购物车'" @click="order('cart')">加入购物车</div>
           <div class="btn-pay" v-else  @click="order('pay')">立刻购买</div>
         </div>
         <div class="btn-none" v-else>该商品已被抢完</div>
@@ -105,28 +127,36 @@
 </template>
 
 <script>
-import counter from '@/components/counter.vue'
-import { getGoodsDetail, getGoodsService, getGoodsComment } from '@/api/goods-detail'
 import defaultImg from '@/assets/default-avatar.png'
+import counter from '@/components/counter.vue'
+import { getGoodsDetail, getGoodsService, getGoodsComment, getGoodsCommentList } from '@/api/goods-detail'
+import { getCartSum, addToCart } from '@/api/cart'
 
 export default {
   name: 'DetailIndex',
   created () {
+    // 渲染页面
     this.getDetail()
     this.getService()
     this.getComment(3)
+
+    // 获取用户数据
+    this.getCart()
   },
+
   data () {
     return {
       // 商品详情
       detail: {},
       images: [],
+      skuList: [],
 
       // 商品保障服务
       serviceList: [],
 
       // 商品评价
       commentSum: '',
+      firstThreeComment: [],
       commentList: [],
       defaultImg,
 
@@ -137,24 +167,32 @@ export default {
       count: 1,
 
       // 动作面板
-      showSheet: false,
-      sheetTitle: '加入购物车',
+      showServiceSheet: false,
+      showCommentSheet: false,
+      showPaySheet: false,
+      paySheetTitle: '加入购物车',
 
       // 计时器
-      addCartTimeout: ''
+      addCartTimeout: '',
+
+      // 购物车商品总数
+      cartTotal: ''
     }
   },
+
   computed: {
     goods_id () {
       return this.$route.params.id
     }
   },
+
   methods: {
     // 商品详情
     async getDetail () {
       const { data: { detail } } = await getGoodsDetail(this.goods_id)
       this.detail = detail
       this.images = detail.goods_images
+      this.skuList = detail.skuList
     },
 
     // 商品保障服务
@@ -166,8 +204,13 @@ export default {
     // 商品评价
     async getComment (amount) {
       const { data: { total, list } } = await getGoodsComment(this.goods_id, amount)
-      this.commentList = list
+      this.firstThreeComment = list
       this.commentSum = total
+    },
+    async showCommentList (type, page) {
+      const { data: { list: { data } } } = await getGoodsCommentList(type, this.goods_id, page)
+      this.commentList = data
+      this.showCommentSheet = true
     },
 
     // 轮播图计数
@@ -175,33 +218,34 @@ export default {
       this.current >= 4 ? this.current = 1 : this.current++
     },
 
-    // 动作面板
+    // 购物面板
     popSheet (action) {
       if (action === 'cart') {
-        this.sheetTitle = '加入购物车'
+        this.paySheetTitle = '加入购物车'
       } else if (action === 'pay') {
-        this.sheetTitle = '立刻购买'
-        console.log(this.sheetTitle)
+        this.paySheetTitle = '立刻购买'
       }
-      this.showSheet = true
+      this.showPaySheet = true
     },
 
-    // 加入购物车
-    order (type) {
-      console.log(this.$store.getters.token)
-
+    // 购买
+    async order (type) {
       if (this.$store.getters.token) {
         if (type === 'cart') {
-          // msg = '加入购物车'
+          // 加入购物车
+          const { data, message } = await addToCart(this.goods_id, this.count, this.skuList[0].goods_sku_id) // 后端仅提供1个sku_id
+          this.cartTotal = data.cartTotal
+          this.$toast(message)
+          this.showPaySheet = false
         } else if (type === 'pay') {
-          // msg = '进行购买'
+          this.$router.push('/pay')
         } else {
           console.log('type值错误')
         }
       } else {
         this.$toast('请登录后再进行操作')
         this.addCartTimeout = setTimeout(() => {
-          this.router.push('/login')
+          this.$router.push('/login')
           // this.$router.replace({
           //   path: '/login',
           //   query: {
@@ -210,11 +254,19 @@ export default {
           // })
         }, 2000)
       }
+    },
+
+    // 获取购物车商品总数
+    async getCart () {
+      const { data: { cartTotal } } = await getCartSum()
+      this.cartTotal = cartTotal
     }
   },
+
   components: {
     counter
   },
+
   destroyed () {
     clearTimeout(this.addCartTimeout)
   }
@@ -294,6 +346,17 @@ export default {
     }
   }
 
+  .service-sheet {
+    padding: 0 10px;
+    font-size: 16px;
+    line-height: 40px;
+
+    .van-icon {
+          margin-right: 4px;
+          color: #fa2209;
+        }
+  }
+
   .comment {
     padding: 10px;
 
@@ -305,17 +368,21 @@ export default {
         color: #959595;
       }
     }
-
-    .comment-item {
+  }
+  .comment-sheet {
+    padding: 0 10px;
+  }
+  .comment-item {
       line-height: 30px;
       font-size: 16px;
+
       .top {
         margin-top: 20px;
         height: 30px;
         display: flex;
         align-items: center;
 
-        img {
+        ::v-deep img {
           width: 20px;
           height: 20px;
         }
@@ -329,7 +396,6 @@ export default {
         color: #999;
       }
     }
-  }
 
   .content {
     width: 100%;

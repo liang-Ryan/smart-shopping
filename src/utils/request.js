@@ -1,6 +1,7 @@
 // axios配置文件，配置请求信息
 import axios from 'axios'
 import { Toast } from 'vant'
+import store from '@/store'
 
 // 新的axios实例。避免污染axios的原设置
 const instance = axios.create({
@@ -16,6 +17,13 @@ instance.interceptors.request.use(function (config) {
     forbidClick: true, // 禁用背景点击（节流）
     duration: 0 // 持续时间为0：一直存在，需手动关闭
   })
+
+  // token验证
+  const token = store.getters.token
+  if (token) {
+    config.headers['Access-Token'] = token
+    config.headers.platform = 'H5'
+  }
   return config
 }, function (error) {
   // 对请求错误做些什么

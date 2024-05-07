@@ -44,19 +44,19 @@ export default {
 
 <style lang="less" scoped>
 .counter {
-  width: 110px;
-  height: 30px;
+  width: 95px;
+  height: 25px;
   display: flex;
   gap: 5px;
 
   button {
-    width: 30px;
+    width: 25px;
     border: none;
     background-color: rgb(240,240,240);
   }
 
   input {
-    width: 40px;
+    width: 35px;
     border: none;
     background-color: rgb(240,240,240);
     display: flex;

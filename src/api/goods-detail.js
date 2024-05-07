@@ -27,3 +27,13 @@ export const getGoodsComment = (id, amount) => {
     }
   })
 }
+// 获取商品评价列表
+export const getGoodsCommentList = (scoreType, id, page) => {
+  return request.get('/comment/list', {
+    params: {
+      scoreType,
+      goodsId: id,
+      page
+    }
+  })
+}
