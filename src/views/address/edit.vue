@@ -1,42 +1,40 @@
 <template>
   <div class="main-content">
-    <van-nav-bar fixed title="编辑收货地址" left-arrow @click-left="$router.go(-1)" />
+    <van-nav-bar fixed :title="title" left-arrow @click-left="$router.go(-1)" />
 
     <div class="title">收货地址</div>
 
     <div class="form">
-      <van-form @submit="onSubmit">
-        <van-field
-          v-model="name"
-          name="name"
-          label="姓名"
-          placeholder="姓名"
-        />
+      <van-field
+        v-model="name"
+        name="name"
+        label="姓名"
+        placeholder="姓名"
+      />
 
-        <van-field
-          v-model="phone"
-          type="phone"
-          name="phone"
-          label="手机号码"
-          placeholder="手机号码"
-        />
+      <van-field
+        v-model="phone"
+        type="phone"
+        name="phone"
+        label="手机号码"
+        placeholder="手机号码"
+      />
 
-        <van-field
-          v-model="area"
-          type="area"
-          name="area"
-          label="地区"
-          placeholder="地区"
-        />
+      <van-field
+        v-model="area"
+        type="area"
+        name="area"
+        label="地区"
+        placeholder="地区"
+      />
 
-        <van-field
-          v-model="address"
-          type="address"
-          name="address"
-          label="详细地址"
-          placeholder="详细地址"
-        />
-      </van-form>
+      <van-field
+        v-model="address"
+        type="address"
+        name="address"
+        label="详细地址"
+        placeholder="详细地址"
+      />
     </div>
 
     <div class="submit">提交</div>
@@ -55,11 +53,9 @@ export default {
       address: this.$route.query.addressDetail || ''
     }
   },
-  props: ['addressName'],
-  methods: {
-    // 表单
-    onSubmit (values) {
-      console.log('submit', values)
+  computed: {
+    title () {
+      return this.$route.query.addressName ? '编辑收货地址' : '添加收货地址'
     }
   }
 }

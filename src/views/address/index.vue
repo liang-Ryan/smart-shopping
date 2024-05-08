@@ -28,9 +28,8 @@
                 item.region.city,
                 item.region.region,
                 item.detail,
-              )">
-                <van-icon name="edit" />编辑</span>
-              <span><van-icon name="delete-o" />删除</span>
+              )"><van-icon name="edit" />编辑</span>
+              <span @click="delAddress(item.address_id)"><van-icon name="delete-o" />删除</span>
             </div>
           </div>
         </div>
@@ -39,13 +38,14 @@
 
     <!-- 底部功能 -->
     <div class="footer">
-      <div>添加新地址</div>
+      <div @click="$router.push('/addressEdit')">添加新地址</div>
     </div>
   </div>
 </template>
 
 <script>
-import { getAddressList } from '@/api/address'
+import { delAddress, getAddressList } from '@/api/address'
+import { Dialog } from 'vant'
 
 export default {
   name: 'addressPage',
@@ -83,6 +83,20 @@ export default {
           addressDetail: detail
         }
       })
+    },
+
+    // 删除收货地址
+    async delAddress (id) {
+      Dialog.confirm({
+        message: '确认删除该地址吗？'
+      })
+        .then(async () => {
+          const { message } = await delAddress(id)
+          this.$toast(message)
+          this.getList()
+        })
+        .catch(() => {
+        })
     }
   }
 }

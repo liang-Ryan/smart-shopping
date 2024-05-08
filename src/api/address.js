@@ -18,7 +18,9 @@ export const getAddressList = () => {
   return request.get('/address/list')
 }
 
-// 获取城市列表
-export const getRegionList = () => {
-  return request.get('/region/tree')
+// 删除收货地址
+export const delAddress = (id) => {
+  return request.post('/address/remove', {
+    addressId: id
+  })
 }
