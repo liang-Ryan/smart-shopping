@@ -8,6 +8,8 @@ import Login from '@/views/login'
 import Search from '@/views/search'
 import SearchList from '@/views/search/list'
 import Pay from '@/views/pay'
+import Address from '@/views/address'
+import AddressEdit from '@/views/address/edit'
 import Detial from '@/views/detail'
 import MyPage from '@/views/mypage'
 // 二级页面
@@ -24,6 +26,8 @@ const router = new VueRouter({
       path: '/',
       component: Layout,
       redirect: '/home',
+
+      // 二级路由
       children: [
         { path: '/home', component: Home },
         { path: '/category', component: Category },
@@ -35,13 +39,15 @@ const router = new VueRouter({
     { path: '/search', component: Search },
     { path: '/searchlist', component: SearchList },
     { path: '/pay', component: Pay },
+    { path: '/address', component: Address },
+    { path: '/addressEdit', component: AddressEdit },
     { path: '/detial/:id', component: Detial },
     { path: '/mypage', component: MyPage }
   ]
 })
 
 // 全局前置守卫
-const urlArr = ['/pay', '/mypage'] // 需要登录验证的网址
+const urlArr = ['/pay', '/address', '/mypage'] // 需要登录验证的网址
 
 router.beforeEach((to, from, next) => {
   // to为请求前往的路由页面信息对象

@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { Tabbar, TabbarItem, NavBar, Toast, Search, Swipe, SwipeItem, Grid, GridItem, Icon, rate, ActionSheet, Checkbox, Dialog } from 'vant'
+import { Tabbar, TabbarItem, NavBar, Toast, Search, Swipe, SwipeItem, Grid, GridItem, Icon, rate, ActionSheet, Checkbox, Dialog, Radio, RadioGroup, Form, Field, Area, Popup } from 'vant'
 
 // login页面
 Vue.use(Tabbar)
@@ -25,3 +25,13 @@ Vue.use(ActionSheet)
 // 购物车
 Vue.use(Checkbox)
 Vue.use(Dialog)
+
+// 收货地址
+Vue.use(Radio)
+Vue.use(RadioGroup)
+
+// 编辑收货地址
+Vue.use(Form)
+Vue.use(Field)
+Vue.use(Area)
+Vue.use(Popup)
