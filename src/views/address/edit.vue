@@ -20,6 +20,7 @@
         placeholder="手机号码"
       />
 
+      <!-- 后端城市地区接口无法使用地区插件 -->
       <van-field
         v-model="area"
         type="area"

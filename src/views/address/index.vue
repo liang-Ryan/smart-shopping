@@ -18,7 +18,9 @@
           <hr>
 
           <div class="item-bottom">
-            <van-radio :name="item.address_id"><span v-html="item.address_id === defaultAddressId ? '默认' : '选择'"></span></van-radio>
+            <van-radio :name="item.address_id" @click="setDefaultAddress(item.address_id)">
+              <span v-html="item.address_id === defaultAddressId ? '默认' : '选择'"></span>
+            </van-radio>
 
             <div class="item-function">
               <span @click="toAddressEdit(
@@ -44,32 +46,44 @@
 </template>
 
 <script>
-import { delAddress, getAddressList } from '@/api/address'
+import { delAddress, getAddressList, getDefaultAddressID, setDefaultAddress } from '@/api/address'
 import { Dialog } from 'vant'
 
 export default {
   name: 'addressPage',
   created () {
     this.getList()
+    this.getDefaultAddress()
   },
   data () {
     return {
       addressList: [],
-      defaultAddressId: 10191 || ''
+      defaultAddressId: ''
     }
   },
   methods: {
+    // 获取默认收货地址
+    async getDefaultAddress () {
+      const { data: { defaultId } } = await getDefaultAddressID()
+      this.defaultAddressId = defaultId
+    },
+
     // 获取地址列表
     async getList () {
       const { data: { list } } = await getAddressList()
       this.addressList = list
-      console.log(list)
     },
 
     // 拼接详细地址
     addressDetail (address) {
       const { province, city, region } = address.region
       return province + ' ' + city + ' ' + region + ' ' + address.detail
+    },
+
+    // 修改默认收货地址
+    async setDefaultAddress (id) {
+      await setDefaultAddress(id)
+      this.$toast('修改默认收货地址成功')
     },
 
     // 传递编辑地址参数

@@ -1,6 +1,7 @@
 <template>
   <div class="cart">
     <van-nav-bar title="购物车" fixed />
+
     <div class="cart-content" v-if="loginCheck && cartList.length > 0">
       <!-- 购物车top -->
       <div class="cart-top">
@@ -28,6 +29,7 @@
         </div>
       </div>
 
+      <!-- 底部功能 -->
       <div class="footer-fixed">
         <div class="select-check" @click="changeAllChecked(isAllChecked)">
           <van-checkbox :value="isAllChecked" icon-size="18"></van-checkbox>
@@ -39,11 +41,13 @@
             <span>合计：</span>
             <span>¥ <span class="total-price">{{ cartPriceSelected }}</span></span>
           </div>
-          <div v-if="!editMode" class="pay" :class="{ disabled: cartTotalSelected === 0 }">结算({{ cartTotalSelected }})</div>
+          <div v-if="!editMode" class="pay" :class="{ disabled: cartTotalSelected === 0 }" @click="toPay()">结算({{ cartTotalSelected }})</div>
           <div v-else class="delete" :class="{ disabled: cartTotalSelected === 0 }" @click="delCheck()" >删除</div>
         </div>
       </div>
     </div>
+
+    <!-- 未登录 和 空购物车 -->
     <div class="empty-cart" v-else >
       <img src="@/assets/empty.png" alt="">
       <div class="tips" v-html="loginCheck ? '您的购物车是空的, 快去逛逛吧' : '请先登录'"></div>
@@ -61,6 +65,7 @@ export default {
   name: 'CartPage',
 
   created () {
+    // 登录判断
     if (this.loginCheck) {
       this.getList()
     }
@@ -68,14 +73,16 @@ export default {
 
   data () {
     return {
-      checkAll: false,
+      checkAll: false, // 全选判断
       editMode: false
     }
   },
 
   computed: {
     ...mapState('cart', ['cartList']),
-    ...mapGetters('cart', ['cartTotal', 'cartTotalSelected', 'cartPriceSelected', 'isAllChecked']),
+    ...mapGetters('cart', ['cartTotal', 'cartListSelected', 'cartTotalSelected', 'cartPriceSelected', 'isAllChecked']),
+
+    // 登录判断
     loginCheck () {
       return this.$store.getters.token
     }
@@ -84,19 +91,41 @@ export default {
   methods: {
     ...mapMutations('cart', ['changeChecked', 'changeAllChecked']),
     ...mapActions('cart', ['getList', 'changeGoods', 'delGoodsList']),
+
+    // 切换编辑和购买模式
     switchMode () {
       this.editMode = !this.editMode
     },
+
+    // 结算商品
+    toPay () {
+      if (this.cartTotalSelected > 0) {
+        const cartIds = this.cartListSelected.map(element => {
+          return element.id
+        }).join()
+        this.$router.push({
+          path: '/pay',
+          query: {
+            mode: 'cart',
+            cartIds
+          }
+        })
+      }
+    },
+
+    // 删除商品
     delCheck () {
-      this.$dialog.confirm({
-        message: '确认删除所选商品吗？'
-      })
-        .then(() => {
-          this.delGoodsList()
-          this.editMode = false
+      if (this.cartTotalSelected > 0) {
+        this.$dialog.confirm({
+          message: '确认删除所选商品吗？'
         })
-        .catch(() => {
-        })
+          .then(() => {
+            this.delGoodsList()
+            this.editMode = false
+          })
+          .catch(() => {
+          })
+      }
     }
   },
 

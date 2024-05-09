@@ -5,10 +5,10 @@ export const getDefaultAddressID = () => {
   return request.get('/address/defaultId')
 }
 // 获取地址详情
-export const getAddressDetail = (addressId) => {
+export const getAddressDetail = (id) => {
   return request.get('/address/detail', {
-    param: {
-      addressId
+    params: {
+      addressId: id
     }
   })
 }
@@ -16,6 +16,13 @@ export const getAddressDetail = (addressId) => {
 // 获取收货地址列表
 export const getAddressList = () => {
   return request.get('/address/list')
+}
+
+// 修改默认收货地址
+export const setDefaultAddress = (id) => {
+  return request.post('/address/setDefault', {
+    addressId: id
+  })
 }
 
 // 删除收货地址

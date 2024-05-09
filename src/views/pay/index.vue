@@ -8,10 +8,10 @@
         <van-icon name="logistics" />
       </div>
 
-      <div class="info" v-if="addressDefault">
+      <div class="info" v-if="defaultAddress">
         <div class="info-content">
-          <span class="name">{{ addressDefault.name }}</span>
-          <span class="mobile">{{ addressDefault.phone }}</span>
+          <span class="name">{{ defaultAddress.name }}</span>
+          <span class="mobile">{{ defaultAddress.phone }}</span>
         </div>
         <div class="info-address">{{ addressDetail }}</div>
       </div>
@@ -25,45 +25,29 @@
     <!-- 订单明细 -->
     <div class="pay-list">
       <div class="goods-list">
-        <div class="goods-item">
+        <div class="goods-item" v-for="item in goodsList" :key="item.goods_id">
             <div class="left">
-              <img src="http://cba.itlike.com/public/uploads/10001/20230321/8f505c6c437fc3d4b4310b57b1567544.jpg" alt="" />
+              <img :src="item.goods_image" alt="" />
             </div>
             <div class="right">
-              <p class="tit text-ellipsis">
-                 三星手机 SAMSUNG Galaxy S23 8GB+256GB 超视觉夜拍系统 超清夜景 悠雾紫 5G手机 游戏拍照旗舰机s23
-              </p>
+              <p class="tit text-ellipsis">{{ item.goods_name }}</p>
               <p class="info">
-                <span class="count">x3</span>
-                <span class="price">¥9.99</span>
-              </p>
-            </div>
-        </div>
-        <div class="goods-item">
-            <div class="left">
-              <img src="http://cba.itlike.com/public/uploads/10001/20230321/8f505c6c437fc3d4b4310b57b1567544.jpg" alt="" />
-            </div>
-            <div class="right">
-              <p class="tit text-ellipsis">
-                 三星手机 SAMSUNG Galaxy S23 8GB+256GB 超视觉夜拍系统 超清夜景 悠雾紫 5G手机 游戏拍照旗舰机s23
-              </p>
-              <p class="info">
-                <span class="count">x3</span>
-                <span class="price">¥9.99</span>
+                <span class="count">x{{ item.total_num }}</span>
+                <span class="price">￥{{ item.total_price}}</span>
               </p>
             </div>
         </div>
       </div>
 
       <div class="total-box">
-        <span>共 12 件商品，合计：</span>
-        <span class="red">￥1219.00</span>
+        <span>共 {{ orderTotalNum }} 件商品，合计：</span>
+        <span class="red">￥{{ orderPayPrice }}</span>
       </div>
 
       <div class="pay-detail">
         <div class="pay-cell">
           <span>订单总金额：</span>
-          <span class="red">￥1219.00</span>
+          <span class="red">￥{{ orderPrice }}</span>
         </div>
 
         <div class="pay-cell">
@@ -73,7 +57,7 @@
 
         <div class="pay-cell">
           <span>配送费用：</span>
-          <span v-if="false">请先选择配送地址</span>
+          <span v-if="!defaultAddress">请先选择配送地址</span>
           <span v-else class="red">+￥0.00</span>
         </div>
       </div>
@@ -82,7 +66,7 @@
       <div class="pay-way">
         <span class="pay-title">支付方式</span>
         <div class="pay-cell">
-          <van-icon name="balance-o" /><span>余额支付（可用 ¥ 999919.00 元）</span>
+          <van-icon name="balance-o" /><span>余额支付（可用 ¥ {{ balance }} 元）</span>
           <!-- <span>请先选择配送地址</span> -->
           <span class="red"><van-icon name="passed" /></span>
         </div>
@@ -96,50 +80,65 @@
 
     <!-- 底部提交 -->
     <div class="footer-fixed">
-      <div class="left">实付款：<span class="red">￥999919</span></div>
-      <div class="btn">提交订单</div>
+      <div class="left">实付款：<span class="red">￥{{ orderTotalPrice }}</span></div>
+      <div class="btn" :class="{ disabled: !affordable }" v-html=" affordable ? '提交订单' : '余额不足'"></div>
     </div>
   </div>
 </template>
 
 <script>
-import { getDefaultAddressID, getAddressDetail, getAddressList } from '@/api/address'
+import { getOrder } from '@/api/pay'
 
 export default {
   name: 'PayIndex',
+
   created () {
-    this.getDefaulitID()
-    this.getAddress()
+    this.getOrder()
   },
+
   data () {
     return {
-      addressDefaultId: '',
-      addressList: []
+      // 收货地址
+      defaultAddress: {},
+      addressDetail: '',
+
+      // 订单数据
+      goodsList: [],
+      orderPayPrice: '',
+      orderPrice: '',
+      orderTotalNum: '',
+      orderTotalPrice: '',
+
+      // 用户信息
+      balance: ''
     }
   },
+
   computed: {
-    addressDefault () {
-      return this.addressList ? this.addressList[0] : {}
-    },
-    addressDetail () {
-      const { province, city, region } = this.addressDefault.region
-      return province + ' ' + city + ' ' + region + ' ' + this.addressDefault.detail
+    // 余额判断
+    affordable () {
+      return +this.balance > +this.orderTotalPrice
     }
   },
+
   methods: {
-    async getDefaulitID () {
-      const { data: { defaultId } } = await getDefaultAddressID()
-      this.addressDefaultId = defaultId
-      this.getDetail(defaultId)
-    },
-    async getDetail (id) {
-      console.log(id)
-      const res = await getAddressDetail(id)
-      console.log(res)
-    },
-    async getAddress () {
-      const { data: { list } } = await getAddressList()
-      this.addressList = list
+    // 获取订单信息
+    async getOrder () {
+      const { data: { order, personal } } = await getOrder(this.$route.query.mode, { cartIds: this.$route.query.cartIds })
+
+      // 收货地址
+      this.defaultAddress = order.address
+      this.addressDetail = order.address.region.province + ' ' + order.address.region.city + ' ' + order.address.region.region + ' ' + order.address.detail
+
+      // 商品数据
+      this.goodsList = order.goodsList
+      this.orderPayPrice = order.orderPayPrice
+      this.orderPrice = order.orderPrice
+      this.orderTotalNum = order.orderTotalNum
+      this.orderTotalPrice = order.orderTotalPrice
+
+      // 用户信息
+      this.balance = personal.balance
     }
   }
 }
@@ -147,7 +146,7 @@ export default {
 
 <style lang="less" scoped>
 .main-content {
-  padding-top: 46px 0;
+  padding: 46px 0;
   font-size: 14px;
   color: #333;
 
@@ -283,6 +282,10 @@ export default {
       background: linear-gradient(90deg,#f9211c,#ff6335);
       color: #fff;
       text-align: center;
+
+      &.disabled {
+        background: #ff9779;
+      }
     }
   }
 
