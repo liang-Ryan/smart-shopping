@@ -100,14 +100,15 @@ export default {
     // 结算商品
     toPay () {
       if (this.cartTotalSelected > 0) {
-        const cartIds = this.cartListSelected.map(element => {
-          return element.id
-        }).join()
         this.$router.push({
           path: '/pay',
           query: {
             mode: 'cart',
-            cartIds
+            obj: {
+              cartIds: this.cartListSelected.map(element => {
+                return element.id
+              }).join()
+            }
           }
         })
       }

@@ -74,20 +74,25 @@
 
       <!-- 买家留言 -->
       <div class="buytips">
-        <textarea placeholder="选填：买家留言（50字内）" name="" id="" cols="30" rows="10"></textarea>
+        <textarea placeholder="选填：买家留言（50字内）"  cols="30" rows="10" v-model="remark"></textarea>
       </div>
     </div>
 
     <!-- 底部提交 -->
     <div class="footer-fixed">
       <div class="left">实付款：<span class="red">￥{{ orderTotalPrice }}</span></div>
-      <div class="btn" :class="{ disabled: !affordable }" v-html=" affordable ? '提交订单' : '余额不足'"></div>
+      <div
+       class="btn"
+       :class="{ disabled: !affordable }"
+       v-html=" affordable ? '提交订单' : '余额不足'"
+       @click="submit"
+       ></div>
     </div>
   </div>
 </template>
 
 <script>
-import { getOrder } from '@/api/pay'
+import { getOrder, submitOrder } from '@/api/pay'
 
 export default {
   name: 'PayIndex',
@@ -108,6 +113,7 @@ export default {
       orderPrice: '',
       orderTotalNum: '',
       orderTotalPrice: '',
+      remark: '',
 
       // 用户信息
       balance: ''
@@ -118,13 +124,21 @@ export default {
     // 余额判断
     affordable () {
       return +this.balance > +this.orderTotalPrice
+    },
+
+    mode () {
+      return this.$route.query.mode
+    },
+
+    obj () {
+      return this.$route.query.obj
     }
   },
 
   methods: {
     // 获取订单信息
     async getOrder () {
-      const { data: { order, personal } } = await getOrder(this.$route.query.mode, { cartIds: this.$route.query.cartIds })
+      const { data: { order, personal } } = await getOrder(this.mode, this.obj)
 
       // 收货地址
       this.defaultAddress = order.address
@@ -139,6 +153,19 @@ export default {
 
       // 用户信息
       this.balance = personal.balance
+    },
+
+    // 提交订单
+    async submit () {
+      const { data: { orderId, payType } } = await submitOrder(this.mode, this.obj, this.remark)
+      this.$toast('支付成功')
+      this.$router.replace({
+        path: '/mypage',
+        query: {
+          orderId,
+          payType
+        }
+      })
     }
   }
 }

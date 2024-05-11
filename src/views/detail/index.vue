@@ -131,9 +131,15 @@ import defaultImg from '@/assets/default-avatar.png'
 import counter from '@/components/counter.vue'
 import { getGoodsDetail, getGoodsService, getGoodsComment, getGoodsCommentList } from '@/api/goods-detail'
 import { getCartSum, addToCart } from '@/api/cart'
+import loginconfig from '@/mixins/loginconfig'
 
 export default {
   name: 'DetailIndex',
+  components: {
+    counter
+  },
+  mixins: [loginconfig],
+
   created () {
     // 渲染页面
     this.getDetail()
@@ -171,9 +177,6 @@ export default {
       showCommentSheet: false,
       showPaySheet: false,
       paySheetTitle: '加入购物车',
-
-      // 计时器
-      addCartTimeout: '',
 
       // 购物车商品总数
       cartTotal: ''
@@ -230,29 +233,29 @@ export default {
 
     // 购买
     async order (type) {
-      if (this.$store.getters.token) {
+      if (this.loginCheck()) { // 登录验证
         if (type === 'cart') {
-          // 加入购物车
+        // 加入购物车
           const { data, message } = await addToCart(this.goods_id, this.count, this.skuList[0].goods_sku_id) // 后端仅提供1个sku_id
           this.cartTotal = data.cartTotal
           this.$toast(message)
           this.showPaySheet = false
         } else if (type === 'pay') {
-          this.$router.push('/pay')
+        // 立即购买
+          this.$router.push({
+            path: '/pay',
+            query: {
+              mode: 'buyNow',
+              obj: {
+                goodsId: this.goods_id,
+                goodsNum: this.count,
+                goodsSkuId: this.skuList[0].goods_sku_id
+              }
+            }
+          })
         } else {
           console.log('type值错误')
         }
-      } else {
-        this.$toast('请登录后再进行操作')
-        this.addCartTimeout = setTimeout(() => {
-          this.$router.push('/login')
-          // this.$router.replace({
-          //   path: '/login',
-          //   query: {
-          //     backUrl: this.$route.fullPath // 传递参数
-          //   }
-          // })
-        }, 2000)
       }
     },
 
@@ -261,14 +264,6 @@ export default {
       const { data: { cartTotal } } = await getCartSum()
       this.cartTotal = cartTotal
     }
-  },
-
-  components: {
-    counter
-  },
-
-  destroyed () {
-    clearTimeout(this.addCartTimeout)
   }
 }
 </script>
