@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { getImgCode, getMsgCode, login } from '@/api/login'
+import { getImgCode, getMsgCode, login } from '@/api/user'
 
 export default {
   name: 'LoginIndex',
@@ -54,7 +54,7 @@ export default {
     }
   },
 
-  async created () {
+  created () {
     this.getImgCode()
   },
 
@@ -71,7 +71,7 @@ export default {
     },
 
     // 手机号和验证码格式验证
-    validFn (msg) {
+    validFn () {
       if (!/^1[3-9]\d{9}$/.test(this.phoneNumber)) {
         this.$toast('请输入正确的手机号')
         return false

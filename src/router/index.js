@@ -11,7 +11,7 @@ import Pay from '@/views/pay'
 import Address from '@/views/address'
 import AddressEdit from '@/views/address/edit'
 import Detial from '@/views/detail'
-import MyPage from '@/views/mypage'
+import Order from '@/views/order'
 // 二级页面
 import Home from '@/views/layout/home'
 import Category from '@/views/layout/category'
@@ -42,12 +42,12 @@ const router = new VueRouter({
     { path: '/address', component: Address },
     { path: '/addressEdit', component: AddressEdit },
     { path: '/detial/:id', component: Detial },
-    { path: '/mypage', component: MyPage }
+    { path: '/order', component: Order }
   ]
 })
 
 // 全局前置守卫
-const urlArr = ['/pay', '/address', '/mypage'] // 需要登录验证的网址
+const urlArr = ['/pay', '/address', 'addressEdit', '/order'] // 需要登录验证的网址
 
 router.beforeEach((to, from, next) => {
   // to为请求前往的路由页面信息对象

@@ -25,3 +25,9 @@ export const login = (phoneNumber, msgCode) => {
     }
   })
 }
+
+// 我的页面
+// 获取用户信息
+export const getUserInfo = () => {
+  return request.get('/user/info')
+}
