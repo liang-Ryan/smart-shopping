@@ -1,4 +1,4 @@
-import { getCartList, changeCartGoods, delCartGoods } from '@/api/cart'
+import { cartGetListAPI, cartPostUpdataAPI, cartPostClearAPI } from '@/api/cart'
 import { Toast } from 'vant'
 
 export default {
@@ -71,7 +71,7 @@ export default {
   actions: {
     // 获取购物车列表
     async getList (context) {
-      const { data } = await getCartList()
+      const { data } = await cartGetListAPI()
 
       // 为返回数组添加isCheacked属性，方便与商品id绑定
       data.list.forEach(element => {
@@ -84,7 +84,7 @@ export default {
     async changeGoods (context, data) {
       // 发起请求
       const { id, num, skuid } = data
-      await changeCartGoods(id, num, skuid)
+      await cartPostUpdataAPI(id, num, skuid)
 
       // 修改本地内容
       context.commit('changeGoodsNum', { id: id, num: num })
@@ -95,7 +95,7 @@ export default {
       const delList = context.getters.cartListSelected.map(element => {
         return element.id
       })
-      const { message } = await delCartGoods(delList)
+      const { message } = await cartPostClearAPI(delList)
       Toast(message)
       context.dispatch('getList')
     }

@@ -51,7 +51,7 @@
 
 <script>
 import GoodsItem from '@/components/GoodsItem.vue'
-import { getHomePageDetail } from '@/api/home'
+import { homeGetDetailAPI } from '@/api/home'
 
 export default {
   name: 'HomePage',
@@ -68,7 +68,7 @@ export default {
   },
   methods: {
     async getDetail () {
-      const { data: { pageData: { items } } } = await getHomePageDetail()
+      const { data: { pageData: { items } } } = await homeGetDetailAPI()
       this.swipeBannerList = items[1].data
       this.gridList = items[3].data
       this.bannerImgUrl = items[4].data[0].imgUrl

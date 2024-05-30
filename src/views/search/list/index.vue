@@ -38,7 +38,7 @@
 
 <script>
 import GoodsItem from '@/components/GoodsItem.vue'
-import { getSearchPageDetail } from '@/api/search'
+import { searchGetListAPI } from '@/api/search'
 
 export default {
   name: 'SearchListIndex',
@@ -66,7 +66,7 @@ export default {
   methods: {
     // 获取搜索的商品列表
     async getDetail (obj) {
-      const { data: { list: { data } } } = await getSearchPageDetail(obj)
+      const { data: { list: { data } } } = await searchGetListAPI(obj)
       this.goodsList = data
 
       // 切换价格排序

@@ -18,7 +18,7 @@
 
 <script>
 
-import { getOrderList } from '@/api/order'
+import { orderGetListAPI } from '@/api/order'
 import OrderListItem from '@/components/OrderListItem.vue'
 
 export default {
@@ -45,7 +45,7 @@ export default {
   methods: {
     // 获取订单信息
     async getList (type, page) {
-      const { data: { list: { data } } } = await getOrderList(type, page)
+      const { data: { list: { data } } } = await orderGetListAPI(type, page)
       this.list = data
     }
   },

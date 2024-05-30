@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import { getCategoryPageDetail } from '@/api/category'
+import { catagoryGetDetailAPI } from '@/api/category'
 
 export default {
   name: 'CategoryPage',
@@ -52,7 +52,7 @@ export default {
   },
   methods: {
     async getPageDetail () {
-      const { data: { list } } = await getCategoryPageDetail()
+      const { data: { list } } = await catagoryGetDetailAPI()
       this.list = list
     }
   }

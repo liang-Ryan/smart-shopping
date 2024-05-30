@@ -104,7 +104,7 @@
 </template>
 
 <script>
-import { getUserInfo } from '@/api/user'
+import { userGetInfoAPI } from '@/api/user'
 import { delLocalUserInfo } from '@/utils/storage'
 
 export default {
@@ -134,7 +134,7 @@ export default {
   methods: {
     // 获取用户信息
     async getInfo () {
-      const { data: { userInfo } } = await getUserInfo()
+      const { data: { userInfo } } = await userGetInfoAPI()
       this.userInfo = userInfo
     },
 

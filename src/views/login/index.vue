@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { getImgCode, getMsgCode, login } from '@/api/user'
+import { userGetImgCodeAPI, userPostCaptchaAPI, userPostLoginAPI } from '@/api/user'
 
 export default {
   name: 'LoginIndex',
@@ -61,7 +61,7 @@ export default {
   methods: {
     // 图形验证码
     async getImgCode () {
-      const { data: { base64, key } } = await getImgCode()
+      const { data: { base64, key } } = await userGetImgCodeAPI()
       this.imgUrl = base64
       this.imgKey = key
     },
@@ -87,7 +87,7 @@ export default {
     async getMsgCode () {
       if (this.validFn()) {
         // 发送请求
-        const msgResult = await getMsgCode(this.imgCode, this.imgKey, this.phoneNumber)
+        const msgResult = await userPostCaptchaAPI(this.imgCode, this.imgKey, this.phoneNumber)
         this.$toast(msgResult.message)
 
         // 开启计时器
@@ -120,7 +120,7 @@ export default {
       }
 
       // 发起请求
-      const loginResponse = await login(this.phoneNumber, this.msgCode)
+      const loginResponse = await userPostLoginAPI(this.phoneNumber, this.msgCode)
       this.$store.commit('user/setUserInfo', loginResponse.data)
       this.$toast(loginResponse.message)
       if (loginResponse.status === 200) {

@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 // 商品详情
-export const getGoodsDetail = (id) => {
+export const goodsGetDetailAPI = (id) => {
   return request.get('/goods/detail', {
     params: {
       goodsId: id
@@ -10,7 +10,7 @@ export const getGoodsDetail = (id) => {
 }
 
 // 商品保障服务
-export const getGoodsService = (id) => {
+export const goodsGetServiceAPI = (id) => {
   return request.get('/goods.service/list', {
     params: {
       goodsId: id
@@ -19,7 +19,7 @@ export const getGoodsService = (id) => {
 }
 
 // 获取商品评价
-export const getGoodsComment = (id, amount) => {
+export const goodsGetCommentsAPI = (id, amount) => {
   return request.get('/comment/listRows', {
     params: {
       goodsId: id,
@@ -28,7 +28,7 @@ export const getGoodsComment = (id, amount) => {
   })
 }
 // 获取商品评价列表
-export const getGoodsCommentList = (scoreType, id, page) => {
+export const goodsGeCommentListAPI = (scoreType, id, page) => {
   return request.get('/comment/list', {
     params: {
       scoreType,

@@ -92,7 +92,7 @@
 </template>
 
 <script>
-import { getOrder, submitOrder } from '@/api/pay'
+import { payGetOrderAPI, payPostSubmitAPI } from '@/api/pay'
 
 export default {
   name: 'PayIndex',
@@ -138,7 +138,7 @@ export default {
   methods: {
     // 获取订单信息
     async getOrder () {
-      const { data: { order, personal } } = await getOrder(this.mode, this.obj)
+      const { data: { order, personal } } = await payGetOrderAPI(this.mode, this.obj)
 
       // 收货地址
       this.defaultAddress = order.address
@@ -157,7 +157,7 @@ export default {
 
     // 提交订单
     async submit () {
-      const { data: { orderId, payType } } = await submitOrder(this.mode, this.obj, this.remark)
+      const { data: { orderId, payType } } = await payPostSubmitAPI(this.mode, this.obj, this.remark)
       this.$toast('支付成功')
       this.$router.replace({
         path: '/mypage',

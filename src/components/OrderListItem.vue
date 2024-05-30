@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { cancelOrder, receiptOrder } from '@/api/order'
+import { orderPostCancelAPI, orderPostReceiptAPI } from '@/api/order'
 
 export default {
   props: ['item'],
@@ -53,14 +53,14 @@ export default {
   methods: {
     // 确认收货
     async receiptOrder (id) {
-      const { message } = await receiptOrder(id)
+      const { message } = await orderPostReceiptAPI(id)
       this.$toast(message)
       this.reload()
     },
 
     // 取消订单
     async cancelOrder (id) {
-      const { message } = await cancelOrder(id)
+      const { message } = await orderPostCancelAPI(id)
       this.$toast(message)
       this.reload()
     },

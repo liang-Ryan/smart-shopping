@@ -129,8 +129,8 @@
 <script>
 import defaultImg from '@/assets/default-avatar.png'
 import counter from '@/components/counter.vue'
-import { getGoodsDetail, getGoodsService, getGoodsComment, getGoodsCommentList } from '@/api/goods-detail'
-import { getCartSum, addToCart } from '@/api/cart'
+import { goodsGetDetailAPI, goodsGetServiceAPI, goodsGetCommentsAPI, goodsGeCommentListAPI } from '@/api/goods-detail'
+import { cartGetSumAPI, cartPostAddAPI } from '@/api/cart'
 import loginconfig from '@/mixins/loginconfig'
 
 export default {
@@ -192,7 +192,7 @@ export default {
   methods: {
     // 商品详情
     async getDetail () {
-      const { data: { detail } } = await getGoodsDetail(this.goods_id)
+      const { data: { detail } } = await goodsGetDetailAPI(this.goods_id)
       this.detail = detail
       this.images = detail.goods_images
       this.skuList = detail.skuList
@@ -200,18 +200,18 @@ export default {
 
     // 商品保障服务
     async getService () {
-      const { data: { list } } = await getGoodsService(this.goods_id)
+      const { data: { list } } = await goodsGetServiceAPI(this.goods_id)
       this.serviceList = list
     },
 
     // 商品评价
     async getComment (amount) {
-      const { data: { total, list } } = await getGoodsComment(this.goods_id, amount)
+      const { data: { total, list } } = await goodsGetCommentsAPI(this.goods_id, amount)
       this.firstThreeComment = list
       this.commentSum = total
     },
     async showCommentList (type, page) {
-      const { data: { list: { data } } } = await getGoodsCommentList(type, this.goods_id, page)
+      const { data: { list: { data } } } = await goodsGeCommentListAPI(type, this.goods_id, page)
       this.commentList = data
       this.showCommentSheet = true
     },
@@ -236,7 +236,7 @@ export default {
       if (this.loginCheck()) { // 登录验证
         if (type === 'cart') {
         // 加入购物车
-          const { data, message } = await addToCart(this.goods_id, this.count, this.skuList[0].goods_sku_id) // 后端仅提供1个sku_id
+          const { data, message } = await cartPostAddAPI(this.goods_id, this.count, this.skuList[0].goods_sku_id) // 后端仅提供1个sku_id
           this.cartTotal = data.cartTotal
           this.$toast(message)
           this.showPaySheet = false
@@ -261,7 +261,7 @@ export default {
 
     // 获取购物车商品总数
     async getCart () {
-      const { data: { cartTotal } } = await getCartSum()
+      const { data: { cartTotal } } = await cartGetSumAPI()
       this.cartTotal = cartTotal
     }
   }

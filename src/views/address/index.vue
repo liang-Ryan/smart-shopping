@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { delAddress, getAddressList, getDefaultAddressID, setDefaultAddress } from '@/api/address'
+import { addressPostRemoveAPI, addressGetListAPI, addressGetDefaultIdAPI, addressPostDefaultAPI } from '@/api/address'
 import { Dialog } from 'vant'
 
 export default {
@@ -64,13 +64,13 @@ export default {
   methods: {
     // 获取默认收货地址
     async getDefaultAddress () {
-      const { data: { defaultId } } = await getDefaultAddressID()
+      const { data: { defaultId } } = await addressGetDefaultIdAPI()
       this.defaultAddressId = defaultId
     },
 
     // 获取地址列表
     async getList () {
-      const { data: { list } } = await getAddressList()
+      const { data: { list } } = await addressGetListAPI()
       this.addressList = list
     },
 
@@ -82,7 +82,7 @@ export default {
 
     // 修改默认收货地址
     async setDefaultAddress (id) {
-      await setDefaultAddress(id)
+      await addressPostDefaultAPI(id)
       this.$toast('修改默认收货地址成功')
     },
 
@@ -105,7 +105,7 @@ export default {
         message: '确认删除该地址吗？'
       })
         .then(async () => {
-          const { message } = await delAddress(id)
+          const { message } = await addressPostRemoveAPI(id)
           this.$toast(message)
           this.getList()
         })

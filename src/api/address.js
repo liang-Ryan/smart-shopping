@@ -1,11 +1,11 @@
 import request from '@/utils/request'
 
 // 获取默认收获地址id
-export const getDefaultAddressID = () => {
+export const addressGetDefaultID = () => {
   return request.get('/address/defaultId')
 }
 // 获取地址详情
-export const getAddressDetail = (id) => {
+export const addressGetDetailAPI = (id) => {
   return request.get('/address/detail', {
     params: {
       addressId: id
@@ -14,19 +14,19 @@ export const getAddressDetail = (id) => {
 }
 
 // 获取收货地址列表
-export const getAddressList = () => {
+export const addressGetListAPI = () => {
   return request.get('/address/list')
 }
 
 // 修改默认收货地址
-export const setDefaultAddress = (id) => {
+export const addressPostDefaultAPI = (id) => {
   return request.post('/address/setDefault', {
     addressId: id
   })
 }
 
 // 删除收货地址
-export const delAddress = (id) => {
+export const addressPostRemoveAPI = (id) => {
   return request.post('/address/remove', {
     addressId: id
   })
