@@ -1,6 +1,6 @@
 <template>
   <div class="main-content">
-    <van-nav-bar fixed title="收货地址" left-arrow @click-left="$router.go(-1)" />
+    <van-nav-bar fixed title="收货地址" left-arrow @click-left="toPay()" />
 
     <!-- 地址主体 -->
     <div class="address-list">
@@ -111,6 +111,17 @@ export default {
         })
         .catch(() => {
         })
+    },
+
+    // 返回订单结算页
+    toPay () {
+      this.$router.push({
+        path: '/pay',
+        query: {
+          mode: this.$route.query.mode,
+          obj: this.$route.query.obj
+        }
+      })
     }
   }
 }

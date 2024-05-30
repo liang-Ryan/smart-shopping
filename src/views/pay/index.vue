@@ -3,7 +3,7 @@
     <van-nav-bar fixed title="结算" left-arrow @click-left="$router.go(-1)" />
 
     <!-- 地址 -->
-    <div class="address" @click="$router.push('/address')">
+    <div class="address" @click="toAddressEdit()">
       <div class="left-icon">
         <van-icon name="logistics" />
       </div>
@@ -164,6 +164,17 @@ export default {
         query: {
           orderId,
           payType
+        }
+      })
+    },
+
+    // 编辑收货地址
+    toAddressEdit () {
+      this.$router.push({
+        path: '/address',
+        query: {
+          mode: this.mode,
+          obj: this.obj
         }
       })
     }
