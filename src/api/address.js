@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 // 获取默认收获地址id
-export const addressGetDefaultID = () => {
+export const addressGetDefaultIdAPI = () => {
   return request.get('/address/defaultId')
 }
 // 获取地址详情

@@ -8,7 +8,7 @@ import store from './store'
 import '@/utils/vant-ui'
 
 // 样式
-import '@/styles/common.less'
+import '@/assets/common.less'
 
 Vue.config.productionTip = false
 
