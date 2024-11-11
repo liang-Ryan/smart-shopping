@@ -1,5 +1,8 @@
-const userInfoKey = 'smart_shopping_userInfo' // 用户信息
-const searchHistoryKey = 'smart_shopping_searchHistory' // 搜索历史记录
+// =============================
+// 用户信息
+// =============================
+
+const userInfoKey = 'smart_shopping_userInfo'
 
 // 保存用户信息
 export const setLocalUserInfo = (userInfo) => {
@@ -13,18 +16,4 @@ export const getLocalUserInfo = () => {
 // 删除用户信息
 export const delLocalUserInfo = () => {
   localStorage.removeItem(userInfoKey)
-}
-
-// 保存搜索历史记录
-export const setLocalSearchHistory = (searchHistory) => {
-  localStorage.setItem(searchHistoryKey, JSON.stringify(searchHistory))
-}
-// 查询搜索历史记录
-export const getLocalSearchHistory = () => {
-  const result = localStorage.getItem(searchHistoryKey)
-  return result ? JSON.parse(result) : []
-}
-// 删除搜索历史记录
-export const delLocalSearchHistory = () => {
-  localStorage.removeItem(searchHistoryKey)
 }

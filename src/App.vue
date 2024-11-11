@@ -1,10 +1,7 @@
 <template>
   <div id="app">
-    <!-- <keep-alive :include="['Home', 'Category', 'Detial']"> -->
-      <router-view></router-view>
-    <!-- </keep-alive> -->
+    <router-view></router-view>
   </div>
 </template>
 
-<style>
-</style>
+<style></style>

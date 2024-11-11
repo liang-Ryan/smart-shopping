@@ -2,12 +2,15 @@ import { setLocalUserInfo, getLocalUserInfo } from '@/utils/storage'
 
 export default {
   namespaced: true,
+
   state () {
     return {
       userInfo: getLocalUserInfo()
     }
   },
-  getters () { },
+
+  getters: { },
+
   mutations: {
     // 保存用户信息
     setUserInfo (state, userInfo) {
@@ -15,6 +18,7 @@ export default {
       setLocalUserInfo(userInfo)
     }
   },
+
   actions: {
     // 退出登录
     logOut (context) {

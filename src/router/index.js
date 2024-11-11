@@ -13,7 +13,7 @@ import User from '@/views/layout/user'
 // 一级页面 异步组件
 const Login = () => import('@/views/login')
 const Search = () => import('@/views/search')
-const SearchList = () => import('@/views/search/list')
+const SearchList = () => import('@/views/search/searchResult.vue')
 const Pay = () => import('@/views/pay')
 const Address = () => import('@/views/address')
 const AddressEdit = () => import('@/views/address/edit')

@@ -1,66 +1,81 @@
 <template>
   <!-- 使用vant组件构成 -->
   <div class="search">
-    <van-nav-bar title="商品搜索" left-arrow @click-left="$router.go(-1)" />
+    <van-nav-bar
+      title="商品搜索"
+      left-arrow
+      @click-left="$router.go(-1)"
+    />
 
-    <van-search show-action placeholder="请输入搜索关键词" clearable v-model="searchContent">
+    <van-search
+      show-action
+      placeholder="请输入搜索关键词"
+      clearable
+      v-model="searchContent"
+    >
       <template #action>
         <div @click="toSearchPage(searchContent)">搜索</div>
       </template>
     </van-search>
 
     <!-- 搜索历史 -->
-    <div v-if="history.length > 0">
+    <div v-if="searchHistory.length > 0">
       <div class="title">
         <span>最近搜索</span>
-        <van-icon name="delete-o" size="16" @click="clearHistory"/>
+        <van-icon
+          name="delete-o"
+          size="16"
+          @click="clearLocalSearchHistory"
+        />
       </div>
+
       <div class="list">
-        <div class="list-item" @click="toSearchPage(item)" v-for="(item, index) in history" :key="index">{{ item }}</div>
+        <div
+          class="list-item"
+          @click="toSearchPage(searchContent)"
+          v-for="(searchContent, index) in searchHistory"
+          :key="index"
+        >
+          {{ searchContent }}
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { setLocalSearchHistory, getLocalSearchHistory, delLocalSearchHistory } from '@/utils/storage'
+import { mapMutations, mapState } from 'vuex'
 
 export default {
-  name: 'SearchIndex',
+  name: 'SearchPage',
+
+  created () {
+    this.getLocalSearchHistory()
+  },
+
   data () {
     return {
-      history: getLocalSearchHistory(),
       searchContent: this.$route.query.search || ''
     }
   },
+
+  computed: {
+    ...mapState('search', ['searchHistory']) // 搜索历史记录
+  },
+
   methods: {
-    toSearchPage (keyWords) {
-      // 清空搜索栏
-      this.searchContent = ''
+    ...mapMutations('search', ['getLocalSearchHistory', 'clearLocalSearchHistory']), // 搜索历史记录
 
-      // 非空判断
-      if (keyWords.trim() === '') return
+    // =============================
+    // 搜索栏跳转
+    // =============================
 
-      // 添加历史记录
-      const arrIndex = this.history.indexOf(keyWords)
-      if (arrIndex === -1) {
-        // 将搜索结果保存至最前面
-        this.history.unshift(keyWords)
-      } else {
-        // 删除同名记录后，再将搜索结果保存至最前面
-        this.history.splice(arrIndex, 1)
-        this.history.unshift(keyWords)
-      }
+    toSearchPage (searchContent) {
+      searchContent = searchContent.trim()
+      if (searchContent.trim() === '') return // 非空判断
+      this.searchContent = '' // 清空搜索栏
 
-      // 保存至本地
-      setLocalSearchHistory(this.history)
-
-      // 跳转至搜索详情页
-      this.$router.push(`/searchlist?search=${keyWords}`)
-    },
-    clearHistory () {
-      this.history = []
-      delLocalSearchHistory()
+      this.$router.replace(`/searchlist?search=${searchContent}`) // 跳转至搜索详情页
     }
   }
 }
@@ -69,41 +84,49 @@ export default {
 <style lang="less" scoped>
 .search {
   ::v-deep .van-search__action {
-    background-color: #c21401;
-    color: #fff;
-    padding: 0 20px;
-    border-radius: 0 5px 5px 0;
     margin-right: 10px;
+    border-radius: 0 5px 5px 0;
+    padding: 0 20px;
+    background-color: #c21401;
+
+    color: #fff;
   }
+
   .title {
+    padding: 0 15px;
     height: 40px;
-    line-height: 40px;
+
     font-size: 14px;
+    line-height: 40px;
+
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 15px;
   }
+
   .list {
+    padding: 0 10px;
+
     display: flex;
     justify-content: flex-start;
     flex-wrap: wrap;
-    padding: 0 10px;
     gap: 5%;
   }
+
   .list-item {
-    width: 30%;
-    text-align: center;
-    padding: 7px;
-    line-height: 15px;
-    border-radius: 50px;
-    background: #fff;
-    font-size: 13px;
+    margin-bottom: 10px;
     border: 1px solid #efefef;
-    overflow: hidden;
+    border-radius: 50px;
+    padding: 7px;
+    width: 30%;
+    background: #fff;
+
+    font-size: 13px;
+    line-height: 15px;
+    text-align: center;
     white-space: nowrap;
     text-overflow: ellipsis;
-    margin-bottom: 10px;
+    overflow: hidden;
   }
 }
 </style>
