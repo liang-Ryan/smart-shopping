@@ -104,11 +104,11 @@ export default {
           path: '/pay',
           query: {
             mode: 'cart',
-            obj: {
+            obj: JSON.stringify({
               cartIds: this.cartListSelected.map(element => {
                 return element.id
               }).join()
-            }
+            })
           }
         })
       }

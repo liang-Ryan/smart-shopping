@@ -246,11 +246,11 @@ export default {
             path: '/pay',
             query: {
               mode: 'buyNow',
-              obj: {
+              obj: JSON.stringify({
                 goodsId: this.goods_id,
                 goodsNum: this.count,
                 goodsSkuId: this.skuList[0].goods_sku_id
-              }
+              })
             }
           })
         } else {
