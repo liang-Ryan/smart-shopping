@@ -106,8 +106,8 @@ export default {
         goodsName: goodsName || this.goodsName,
         page: this.page
       }
-      const res = await searchGetListAPI(query)
-      this.goodsList = res.data.list.data
+      const { data: { list: { data } } } = await searchGetListAPI(query)
+      this.goodsList = data
 
       this.switchSort(sortType) // 初始化价格排序
     },
