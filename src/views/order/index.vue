@@ -23,6 +23,7 @@ import OrderListItem from '@/components/OrderListItem.vue'
 
 export default {
   name: 'orderIndex',
+
   components: {
     OrderListItem
   },
@@ -44,8 +45,8 @@ export default {
 
   methods: {
     // 获取订单信息
-    async getList (type, page) {
-      const { data: { list: { data } } } = await orderGetListAPI(type, page)
+    async getList (orderType, page) {
+      const { data: { list: { data } } } = await orderGetListAPI(orderType, page)
       this.list = data
     }
   },
@@ -65,15 +66,18 @@ export default {
 .main-content {
   background-color: #fafafa;
 }
+
 .van-tabs {
   position: sticky;
   top: 0;
 }
+
 .order-none {
   padding: 20px 0;
   background-color: #fff;
-  font-size: 14px;
+
   color: #383838;
+  font-size: 14px;
   text-align: center;
 }
 </style>

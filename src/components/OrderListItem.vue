@@ -1,19 +1,23 @@
 <template>
   <div class="order-list-item">
     <div class="title">
-      <div class="time">{{ item.pay_time }}</div>
+      <div>{{ item.pay_time }}</div>
       <div class="red">
         <span>{{ item.state_text }}</span>
       </div>
     </div>
     <div class="list">
-      <div class="list-item" v-for="goods in item.goods" :key="goods.goods_id">
+      <div
+        class="list-item"
+        v-for="goods in item.goods"
+        :key="goods.goods_id"
+      >
         <div class="goods-img">
-          <img :src="goods.goods_image" alt="">
+          <img :src="goods.goods_image" alt=""/>
         </div>
         <div class="goods-content text-ellipsis">{{ goods.goods_name }}</div>
         <div class="goods-trade">
-          <p>¥ {{ goods.total_price}}</p>
+          <p>¥ {{ goods.total_price }}</p>
           <p>x {{ goods.total_num }}</p>
         </div>
       </div>
@@ -23,8 +27,16 @@
     </div>
     <div class="btn">
       <span v-if="item.state_text === '待支付'">立刻付款</span>
-      <span v-if="item.state_text === '待发货'" @click="cancelOrder(item.order_id)">申请取消</span>
-      <span v-if="item.state_text === '待收货'" @click="receiptOrder(item.order_id)">确认收货</span>
+      <span
+        v-if="item.state_text === '待发货'"
+        @click="cancelOrder(item.order_id)"
+        >申请取消</span
+      >
+      <span
+        v-if="item.state_text === '待收货'"
+        @click="receiptOrder(item.order_id)"
+        >确认收货</span
+      >
       <span v-if="item.state_text === '已完成'">评价</span>
     </div>
   </div>
@@ -34,33 +46,38 @@
 import { orderPostCancelAPI, orderPostReceiptAPI } from '@/api/order'
 
 export default {
-  props: ['item'],
+  props: {
+    item: {
+      type: Object,
+      Required: true
+    }
+  },
 
   data () {
     return {
-      reloadimeout: ''
+      reloadimeout: '' // 刷新页面倒计时
     }
   },
 
   computed: {
     orderTotalNum () {
-      return this.item.goods.reduce((sum, element) => {
-        return sum + element.total_num
+      return this.item.goods.reduce((sum, goods) => {
+        return sum + goods.total_num
       }, 0)
     }
   },
 
   methods: {
     // 确认收货
-    async receiptOrder (id) {
-      const { message } = await orderPostReceiptAPI(id)
+    async receiptOrder (orderId) {
+      const { message } = await orderPostReceiptAPI(orderId)
       this.$toast(message)
       this.reload()
     },
 
     // 取消订单
-    async cancelOrder (id) {
-      const { message } = await orderPostCancelAPI(id)
+    async cancelOrder (orderId) {
+      const { message } = await orderPostCancelAPI(orderId)
       this.$toast(message)
       this.reload()
     },
@@ -81,20 +98,24 @@ export default {
 
 <style lang="less" scoped>
 .order-list-item {
-  padding: 15px;
-  margin: 10px;
   border-radius: 8px;
+  margin: 10px;
+  padding: 15px;
   background-color: #ffffff;
-  box-shadow: 0 0.5px 2px 0 rgba(0,0,0,.05);
+  box-shadow: 0 0.5px 2px 0 rgba(0, 0, 0, 0.05);
+
   display: flex;
   flex-direction: column;
   gap: 10px;
+
   font-size: 13px;
 
   .title {
     margin-bottom: 10px;
     height: 24px;
+
     line-height: 24px;
+
     display: flex;
     justify-content: space-between;
   }
@@ -120,16 +141,20 @@ export default {
 
       .goods-content {
         flex: 2;
-        line-height: 18px;
-        max-height: 36px;
+
         margin: 8px 0;
+        max-height: 36px;
+
+        line-height: 18px;
       }
 
       .goods-trade {
         flex: 1;
+
+        margin: 8px 0;
+
         line-height: 18px;
         text-align: right;
-        margin: 8px 0;
       }
     }
   }
@@ -143,19 +168,21 @@ export default {
 
     span {
       display: inline-block;
-      padding: 0 15px;
+
       border: 0.5px solid #a8a8a8;
       border-radius: 5px;
+      padding: 0 15px;
       height: 28px;
-      line-height: 28px;
-      color: #383838;
+
       font-size: 14px;
+      color: #383838;
+      line-height: 28px;
     }
   }
 
   // 通用样式
   .red {
-      color: #fa2209;
+    color: #fa2209;
   }
 }
 </style>
