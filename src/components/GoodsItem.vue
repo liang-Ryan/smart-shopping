@@ -21,9 +21,7 @@ export default {
   props: {
     item: {
       type: Object,
-      default: () => {
-        return {}
-      }
+      required: true
     }
   }
 }
