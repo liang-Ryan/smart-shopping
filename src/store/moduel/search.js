@@ -31,7 +31,7 @@ export default {
   actions: {
     // 添加搜索历史记录
     addLocalSearchHistory (context, searchContent) {
-      if (isNull(searchContent)) return
+      if (isNull(searchContent)) return // 非空判断
 
       context.commit('getLocalSearchHistory') // 检验搜索历史记录
 
