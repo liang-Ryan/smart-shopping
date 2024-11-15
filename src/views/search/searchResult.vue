@@ -13,9 +13,9 @@
       shape="round"
       background="#ffffff"
       placeholder="请输入搜索关键词"
-      :value="goodsName"
+      :value="query.goodsName"
       show-action
-      @click="$router.push(`/search?search=${goodsName || ''}`)"
+      @click="$router.push(`/search?search=${query.goodsName || ''}`)"
     >
       <template #action>
         <van-icon
@@ -29,19 +29,19 @@
     <div class="sort-btns">
       <div
         class="sort-item"
-        @click="getDetail({ sortType: 'all', sortPrice: '0' })"
+        @click="getDetail('all')"
       >
         综合
       </div>
       <div
         class="sort-item"
-        @click="getDetail({ sortType: 'sales', sortPrice: '0' })"
+        @click="getDetail('sales')"
       >
         销量
       </div>
       <div
         class="sort-item"
-        @click="getDetail({ sortType: 'price' })"
+        @click="getDetail('price')"
       >
         价格
       </div>
@@ -66,14 +66,15 @@ export default {
   name: 'SearchListIndex',
 
   created () {
-    this.getDetail({ sortType: 'all', sortPrice: '0' }) // 请求数据
-    this.addLocalSearchHistory(this.goodsName) // 添加搜索历史记录
+    this.getDetail('all') // 请求数据
+    this.addLocalSearchHistory(this.query.goodsName) // 添加搜索历史记录
   },
 
   watch: {
     // 页面后退时重新请求数据
     $route (to) {
-      this.getDetail({ sortType: 'all', sortPrice: '0', goodsName: to.query.search })
+      this.query.goodsName = to.query.search
+      this.getDetail('all')
     }
   },
 
@@ -83,10 +84,13 @@ export default {
       goodsList: [],
 
       // 查询参数
-      sortPrice: '0',
-      categoryId: this.$route.query.categoryId || '',
-      goodsName: this.$route.query.search || '',
-      page: '1'
+      query: {
+        sortType: 'all',
+        sortPrice: '0',
+        categoryId: this.$route.query.categoryId || '',
+        goodsName: this.$route.query.search || '',
+        page: '1'
+      }
     }
   },
 
@@ -98,26 +102,21 @@ export default {
     // =============================
 
     // 获取搜索的商品列表
-    async getDetail ({ sortType, sortPrice, goodsName }) {
-      const query = {
-        sortType,
-        sortPrice: sortPrice || this.sortPrice,
-        categoryId: this.categoryId,
-        goodsName: goodsName || this.goodsName,
-        page: this.page
-      }
-      const { data: { list: { data } } } = await searchGetListAPI(query)
-      this.goodsList = data
+    async getDetail (sortType) {
+      this.switchSortPrice(sortType) // 初始化价格排序
+      this.query.sortType = sortType
 
-      this.switchSort(sortType) // 初始化价格排序
+      const { data: { list: { data } } } = await searchGetListAPI(this.query)
+      this.goodsList = data
     },
 
     // =============================
     // 初始化价格排序
     // =============================
 
-    switchSort (sortType) {
-      sortType !== 'price' || this.sortPrice !== '0' ? this.sortPrice = '0' : this.sortPrice = '1' // 首次切换至“价格排序”时，价格升序(0)
+    switchSortPrice (sortType) {
+      // 首次切换“排序” / 选择“非价格排序” / 选择价格排序且价格降序(1) => 价格升序(0)
+      sortType !== this.query.sortType || sortType !== 'price' || this.query.sortPrice !== '0' ? this.query.sortPrice = '0' : this.query.sortPrice = '1'
     }
   },
 

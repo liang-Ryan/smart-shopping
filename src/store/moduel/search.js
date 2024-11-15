@@ -1,3 +1,5 @@
+import { isNull } from '@/utils/search'
+
 export default {
   namespaced: true,
 
@@ -29,6 +31,8 @@ export default {
   actions: {
     // 添加搜索历史记录
     addLocalSearchHistory (context, searchContent) {
+      if (isNull(searchContent)) return
+
       context.commit('getLocalSearchHistory') // 检验搜索历史记录
 
       const arrIndex = context.state.searchHistory.indexOf(searchContent) // 查重

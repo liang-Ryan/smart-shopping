@@ -44,6 +44,7 @@
 </template>
 
 <script>
+import { isNull } from '@/utils/search'
 import { mapMutations, mapState } from 'vuex'
 
 export default {
@@ -51,6 +52,12 @@ export default {
 
   created () {
     this.getLocalSearchHistory()
+  },
+  watch: {
+    // 页面后退时重新获取route参数
+    $route (to) {
+      this.searchContent = to.query.search
+    }
   },
 
   data () {
@@ -71,8 +78,7 @@ export default {
     // =============================
 
     toSearchPage (searchContent) {
-      searchContent = searchContent.trim()
-      if (searchContent.trim() === '') return // 非空判断
+      if (isNull(searchContent)) return // 非空判断
       this.searchContent = '' // 清空搜索栏
 
       this.$router.replace(`/searchlist?search=${searchContent}`) // 跳转至搜索详情页
