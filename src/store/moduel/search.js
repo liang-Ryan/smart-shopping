@@ -1,4 +1,7 @@
-import { isNull } from '@/utils/search'
+// 非空判断
+export const isNull = (str) => {
+  return str.trim() === ''
+}
 
 export default {
   namespaced: true,

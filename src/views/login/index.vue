@@ -161,7 +161,7 @@ export default {
         this.phoneNumber,
         this.captchaCode
       )
-      this.$store.commit('user/setUserInfo', data)
+      this.$store.dispatch('user/setUserToken', data)
       this.$toast(message)
 
       if (status === 200) {

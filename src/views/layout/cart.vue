@@ -6,7 +6,7 @@
     />
 
     <div
-      v-if="loginCheck && cartList.length > 0"
+      v-if="isLogin && cartList.length > 0"
     >
       <!-- 购物车top -->
       <div class="cart-top">
@@ -111,13 +111,13 @@
       />
       <div
         class="tips"
-        v-html="loginCheck ? '您的购物车是空的, 快去逛逛吧' : '请先登录'"
+        v-html="isLogin ? '您的购物车是空的, 快去逛逛吧' : '请先登录'"
       ></div>
       <div
         class="btn"
-        @click="loginCheck ? $router.push('/') : $router.push('/login')"
+        @click="isLogin ? $router.push('/') : $router.push('/login')"
       >
-        {{ loginCheck ? '去逛逛' : '登录' }}
+        {{ isLogin ? '去逛逛' : '登录' }}
       </div>
     </div>
   </div>
@@ -132,7 +132,7 @@ export default {
 
   created () {
     // 登录判断
-    if (this.loginCheck) this.getList()
+    if (this.isLogin) this.getList()
   },
 
   data () {
@@ -153,7 +153,7 @@ export default {
     ]),
 
     // 登录判断
-    loginCheck () {
+    isLogin () {
       return this.$store.getters.token
     }
   },

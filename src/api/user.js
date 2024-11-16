@@ -22,6 +22,5 @@ export const userPostLoginAPI = (phoneNumber, msgCode) => request.post('/passpor
   }
 })
 
-// 我的页面
-// 获取用户信息
+// 我的页面 - 获取用户信息
 export const userGetInfoAPI = () => request.get('/user/info')

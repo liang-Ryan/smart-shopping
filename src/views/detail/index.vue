@@ -131,14 +131,14 @@ import defaultImg from '@/assets/default-avatar.png'
 import counter from '@/components/counter.vue'
 import { goodsGetDetailAPI, goodsGetServiceAPI, goodsGetCommentsAPI, goodsGeCommentListAPI } from '@/api/goods-detail'
 import { cartGetSumAPI, cartPostAddAPI } from '@/api/cart'
-import loginconfig from '@/mixins/loginconfig'
+import { Dialog } from 'vant'
 
 export default {
   name: 'DetailIndex',
+
   components: {
     counter
   },
-  mixins: [loginconfig],
 
   created () {
     // 渲染页面
@@ -231,9 +231,33 @@ export default {
       this.showPaySheet = true
     },
 
+    // 登录验证
+    isLogin () {
+      if (this.$store.getters.token) {
+        return true
+      } else {
+        Dialog.confirm({
+          message: '请登录后再进行操作',
+          confirmButtonText: '去登录',
+          cancelButtonText: '再逛逛'
+        })
+          .then(() => {
+            this.$router.push({
+              path: '/login',
+              query: {
+                backUrl: this.$route.fullPath // 传递参数
+              }
+            })
+          })
+          .catch(() => {
+          })
+        return false
+      }
+    },
+
     // 购买
     async order (type) {
-      if (this.loginCheck()) { // 登录验证
+      if (this.isLogin()) { // 登录验证
         if (type === 'cart') {
         // 加入购物车
           const { data, message } = await cartPostAddAPI(this.goods_id, this.count, this.skuList[0].goods_sku_id) // 后端仅提供1个sku_id

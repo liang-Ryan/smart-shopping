@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { isNull } from '@/utils/search'
+import { isNull } from '@/store/moduel/search'
 import { mapMutations, mapState } from 'vuex'
 
 export default {

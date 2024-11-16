@@ -10,15 +10,13 @@ import cart from './moduel/cart'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  state: {
-  },
+  state: { },
   getters: {
     token (theState) {
-      return theState.user.userInfo.token
+      return theState.user.userToken.token
     }
   },
-  mutations: {
-  },
+  mutations: { },
   actions: {
   },
   modules: {

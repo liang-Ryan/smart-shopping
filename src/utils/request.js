@@ -32,12 +32,6 @@ instance.interceptors.request.use(function (config) {
 
 // 添加响应拦截器
 instance.interceptors.response.use(function (response) {
-  // 短信验证码后端接口有问题，获取不到成功响应，无法采用status统一判断
-  // if (response.data.status !== 200) {
-  //   Toast(response.data.message)
-  //   return Promise.reject(response.data.message)
-  // }
-
   // 关闭loading
   Toast.clear()
   return response.data // 添加".data"使返回数据少一层data
