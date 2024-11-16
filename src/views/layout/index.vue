@@ -14,6 +14,7 @@
 <script>
 export default {
   name: 'LayoutIndex',
+
   data () {
     return {
       active: 0

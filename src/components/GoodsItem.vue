@@ -8,9 +8,7 @@
       <img :src="item.goods_image" alt=""/>
     </div>
     <div class="right">
-      <p class="text-ellipsis">
-        {{ item.goods_name }}
-      </p>
+      <p class="text-ellipsis">{{ item.goods_name }}</p>
       <p class="count">已售{{ item.goods_sales }}件</p>
       <p class="price">
         <span class="new">{{ item.goods_price_min }}</span>
@@ -61,8 +59,8 @@ export default {
     justify-content: space-evenly;
 
     .count {
-      font-size: 12px;
       color: #999;
+      font-size: 12px;
     }
 
     .price {
@@ -71,13 +69,13 @@ export default {
       gap: 10px;
 
       .new {
-        font-size: 16px;
         color: #f03c3c;
+        font-size: 16px;
       }
 
       .old {
-        font-size: 12px;
         color: #999;
+        font-size: 12px;
         text-decoration: line-through;
       }
     }
