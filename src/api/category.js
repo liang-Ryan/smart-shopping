@@ -1,6 +1,4 @@
 import request from '@/utils/request'
 
 // 获取商品分类数据
-export const catagoryGetDetailAPI = () => {
-  return request.get('/category/list')
-}
+export const catagoryGetDetailAPI = () => request.get('/category/list')

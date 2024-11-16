@@ -23,16 +23,12 @@ export default {
 
     // 选中商品数量
     cartTotalSelected (state, getters) {
-      return getters.cartListSelected.reduce((sum, list) => {
-        return sum + list.goods_num
-      }, 0)
+      return getters.cartListSelected.reduce((sum, list) => sum + list.goods_num, 0)
     },
 
     // 选中商品总价
     cartPriceSelected (state, getters) {
-      return getters.cartListSelected.reduce((sum, list) => {
-        return sum + list.goods_num * list.goods.goods_price_min
-      }, 0).toFixed(2)
+      return getters.cartListSelected.reduce((sum, list) => sum + list.goods_num * list.goods.goods_price_min, 0).toFixed(2)
     },
 
     // 全选判断
@@ -77,13 +73,15 @@ export default {
       data.list.forEach(element => {
         element.isChecked = false
       })
+
       context.commit('setCartList', data)
     },
 
     // 修改购物车内容
     async changeGoods (context, data) {
-      // 发起请求
       const { id, num, skuid } = data
+
+      // 发起请求，修改后台内容
       await cartPostUpdataAPI(id, num, skuid)
 
       // 修改本地内容
@@ -92,9 +90,7 @@ export default {
 
     // 删除购物车内容
     async delGoodsList (context) {
-      const delList = context.getters.cartListSelected.map(element => {
-        return element.id
-      })
+      const delList = context.getters.cartListSelected.map(element => element.id)
       const { message } = await cartPostClearAPI(delList)
       Toast(message)
       context.dispatch('getList')

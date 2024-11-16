@@ -1,7 +1,11 @@
 <template>
   <div class="counter">
     <button @click="toDetailPage('minus')">-</button>
-    <input type="text" :value="value" @change="changeCount">
+    <input
+      type="text"
+      :value="value"
+      @change="changeCount"
+    />
     <button @click="toDetailPage('add')">+</button>
   </div>
 </template>
@@ -9,6 +13,7 @@
 <script>
 export default {
   name: 'goodsCounter',
+
   props: {
     value: {
       type: Number,
@@ -16,6 +21,7 @@ export default {
       default: 1
     }
   },
+
   methods: {
     toDetailPage (type) {
       if (type === 'minus') {
@@ -46,22 +52,25 @@ export default {
 .counter {
   width: 95px;
   height: 25px;
+
   display: flex;
   gap: 5px;
 
   button {
-    width: 25px;
     border: none;
-    background-color: rgb(240,240,240);
+    width: 25px;
+    background-color: rgb(240, 240, 240);
   }
 
   input {
-    width: 35px;
     border: none;
-    background-color: rgb(240,240,240);
+    width: 35px;
+    background-color: rgb(240, 240, 240);
+
+    text-align: center;
+
     display: flex;
     align-items: center;
-    text-align: center;
   }
 }
 </style>

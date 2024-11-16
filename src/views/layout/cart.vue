@@ -1,29 +1,69 @@
 <template>
   <div class="cart">
-    <van-nav-bar title="购物车" fixed />
+    <van-nav-bar
+      title="购物车"
+      fixed
+    />
 
-    <div class="cart-content" v-if="loginCheck && cartList.length > 0">
+    <div
+      v-if="loginCheck && cartList.length > 0"
+    >
       <!-- 购物车top -->
       <div class="cart-top">
-        <span class="all">共<span>{{ cartTotal }}</span>件商品</span>
-        <span class="edit" @click="switchMode">
+        <span class="all"
+          >共<span>{{ cartTotal }}</span
+          >件商品</span
+        >
+        <span
+          class="edit"
+          @click="switchMode"
+        >
           <van-icon name="edit" />
-          编辑
+          {{ editMode ? '取消' : '编辑' }}
         </span>
       </div>
 
       <!-- 购物车列表 -->
       <div class="cart-list">
-        <div class="cart-item" v-for="item in cartList" :key="item.goods_id">
-          <van-checkbox :value="item.isChecked" @click="changeChecked(item.goods_id)"></van-checkbox>
-          <div class="show" @click="$router.push(`/detial/${item.goods_id}`)">
-            <img :src="item.goods.goods_image" alt="">
+        <div
+          class="cart-item"
+          v-for="item in cartList"
+          :key="item.goods_id"
+        >
+          <van-checkbox
+            :value="item.isChecked"
+            @click="changeChecked(item.goods_id)"
+          ></van-checkbox>
+          <div
+            class="show"
+            @click="$router.push(`/detial/${item.goods_id}`)"
+          >
+            <img
+              :src="item.goods.goods_image"
+              alt=""
+            />
           </div>
           <div class="info">
-            <span class="tit text-ellipsis" @click="$router.push(`/detial/${item.goods_id}`)">{{ item.goods.goods_name }}</span>
+            <span
+              class="tit text-ellipsis"
+              @click="$router.push(`/detial/${item.goods_id}`)"
+              >{{ item.goods.goods_name }}</span
+            >
             <span class="bottom">
-              <div class="price">¥ <span>{{ item.goods.goods_price_min }}</span></div>
-              <counter :value="item.goods_num" @input="(value) => changeGoods({id: item.goods_id, num: value, skuid: item.goods_sku_id})"></counter>
+              <div class="price">
+                ¥ <span>{{ item.goods.goods_price_min }}</span>
+              </div>
+              <counter
+                :value="item.goods_num"
+                @input="
+                  value =>
+                    changeGoods({
+                      id: item.goods_id,
+                      num: value,
+                      skuid: item.goods_sku_id
+                    })
+                "
+              ></counter>
             </span>
           </div>
         </div>
@@ -31,28 +71,54 @@
 
       <!-- 底部功能 -->
       <div class="footer-fixed">
-        <div class="select-check" @click="changeAllChecked(isAllChecked)">
-          <van-checkbox :value="isAllChecked" icon-size="18"></van-checkbox>
+        <div
+          class="select-check"
+          @click="changeAllChecked(isAllChecked)"
+        >
+          <van-checkbox
+            :value="isAllChecked"
+            icon-size="18"
+          ></van-checkbox>
           全选
         </div>
 
         <div class="select-total">
           <div class="price">
             <span>合计：</span>
-            <span>¥ <span class="total-price">{{ cartPriceSelected }}</span></span>
+            <span
+              >¥ <span class="total-price">{{ cartPriceSelected }}</span></span
+            >
           </div>
-          <div v-if="!editMode" class="pay" :class="{ disabled: cartTotalSelected === 0 }" @click="toPay()">结算({{ cartTotalSelected }})</div>
-          <div v-else class="delete" :class="{ disabled: cartTotalSelected === 0 }" @click="delCheck()" >删除</div>
+          <div
+            class="btn"
+            :class="{ disabled: cartTotalSelected === 0 }"
+            @click="editMode ? delCheck() : toPay()"
+          >
+            {{ editMode ? '删除' : `结算(${cartTotalSelected})` }}
+          </div>
         </div>
       </div>
     </div>
 
     <!-- 未登录 和 空购物车 -->
-    <div class="empty-cart" v-else >
-      <img src="@/assets/empty.png" alt="">
-      <div class="tips" v-html="loginCheck ? '您的购物车是空的, 快去逛逛吧' : '请先登录'"></div>
-      <div class="btn" v-if="loginCheck" @click="$router.push('/')">去逛逛</div>
-      <div class="btn" v-else @click="$router.push('/login')">登录</div>
+    <div
+      class="empty-cart"
+      v-else
+    >
+      <img
+        src="@/assets/empty.png"
+        alt=""
+      />
+      <div
+        class="tips"
+        v-html="loginCheck ? '您的购物车是空的, 快去逛逛吧' : '请先登录'"
+      ></div>
+      <div
+        class="btn"
+        @click="loginCheck ? $router.push('/') : $router.push('/login')"
+      >
+        {{ loginCheck ? '去逛逛' : '登录' }}
+      </div>
     </div>
   </div>
 </template>
@@ -66,21 +132,25 @@ export default {
 
   created () {
     // 登录判断
-    if (this.loginCheck) {
-      this.getList()
-    }
+    if (this.loginCheck) this.getList()
   },
 
   data () {
     return {
       checkAll: false, // 全选判断
-      editMode: false
+      editMode: false // 编辑模式判断
     }
   },
 
   computed: {
     ...mapState('cart', ['cartList']),
-    ...mapGetters('cart', ['cartTotal', 'cartListSelected', 'cartTotalSelected', 'cartPriceSelected', 'isAllChecked']),
+    ...mapGetters('cart', [
+      'cartTotal',
+      'cartListSelected',
+      'cartTotalSelected',
+      'cartPriceSelected',
+      'isAllChecked'
+    ]),
 
     // 登录判断
     loginCheck () {
@@ -105,9 +175,9 @@ export default {
           query: {
             mode: 'cart',
             obj: JSON.stringify({
-              cartIds: this.cartListSelected.map(element => {
-                return element.id
-              }).join()
+              cartIds: this.cartListSelected
+                .map(element => element.id)
+                .join()
             })
           }
         })
@@ -117,15 +187,15 @@ export default {
     // 删除商品
     delCheck () {
       if (this.cartTotalSelected > 0) {
-        this.$dialog.confirm({
-          message: '确认删除所选商品吗？'
-        })
+        this.$dialog
+          .confirm({
+            message: '确认删除所选商品吗？'
+          })
           .then(() => {
             this.delGoodsList()
             this.editMode = false
           })
-          .catch(() => {
-          })
+          .catch(() => {})
       }
     }
   },
@@ -140,20 +210,23 @@ export default {
 .cart {
   padding-top: 46px;
   padding-bottom: 100px;
-  background-color: #f5f5f5;
   min-height: 100vh;
+  background-color: #f5f5f5;
 
   .cart-top {
-    height: 40px;
     padding: 0 10px;
+    height: 40px;
+
+    font-size: 14px;
+
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 14px;
 
     .all {
       span {
         margin: 0 2px;
+
         color: #fa2209;
         font-size: 16px;
       }
@@ -172,10 +245,11 @@ export default {
     gap: 10px;
 
     .cart-item {
-      padding: 10px;
       margin: 0 10px;
       border-radius: 5px;
+      padding: 10px;
       background-color: #ffffff;
+
       display: flex;
       justify-content: space-between;
 
@@ -185,12 +259,14 @@ export default {
       }
 
       .info {
-        width: 180px;
         padding: 10px 5px;
+        width: 180px;
+
+        font-size: 14px;
+
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        font-size: 14px;
 
         .bottom {
           display: flex;
@@ -199,6 +275,7 @@ export default {
           .price {
             display: flex;
             align-items: flex-end;
+
             color: #fa2209;
             font-size: 12px;
 
@@ -210,18 +287,19 @@ export default {
       }
     }
   }
-
 }
 
 .footer-fixed {
   position: fixed;
   left: 0;
   bottom: 50px;
+
+  border-bottom: 1px solid #ccc;
+  padding: 0 10px;
   width: 100%;
   height: 50px;
-  padding: 0 10px;
-  border-bottom: 1px solid #ccc;
   background-color: #fff;
+
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -249,13 +327,14 @@ export default {
       }
     }
 
-    .pay, .delete {
+    .btn {
+      border-radius: 18px;
       min-width: 100px;
       height: 36px;
-      line-height: 36px;
-      border-radius: 18px;
       background-color: #fa2f21;
+
       color: #fff;
+      line-height: 36px;
       text-align: center;
 
       &.disabled {
@@ -268,6 +347,7 @@ export default {
 // 空购物车和未登录样式
 .empty-cart {
   padding: 80px 30px;
+
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -283,12 +363,13 @@ export default {
   }
 
   .btn {
+    border-radius: 16px;
     width: 110px;
     height: 32px;
-    line-height: 32px;
-    border-radius: 16px;
     background-color: #fa2c20;
+
     color: #fff;
+    line-height: 32px;
     text-align: center;
   }
 }
