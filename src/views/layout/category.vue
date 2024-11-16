@@ -1,7 +1,10 @@
 <template>
   <div class="category">
     <!-- 分类 -->
-    <van-nav-bar title="全部分类" fixed />
+    <van-nav-bar
+      title="全部分类"
+      fixed
+    />
 
     <!-- 搜索框 -->
     <van-search
@@ -16,8 +19,16 @@
     <div class="list-box">
       <div class="left">
         <ul>
-          <li v-for="(item, index) in list" :key="item.category_id">
-            <a :class="{ active: index === activeIndex }" @click="activeIndex = index" href="javascript:;">{{ item.name }}</a>
+          <li
+            v-for="(item, index) in list"
+            :key="item.category_id"
+          >
+            <a
+              :class="{ active: index === activeIndex }"
+              @click="activeIndex = index"
+              href="javascript:;"
+              >{{ item.name }}</a
+            >
           </li>
         </ul>
       </div>
@@ -26,9 +37,16 @@
           class="cate-goods"
           v-for="item in list[activeIndex]?.children"
           :key="item.category_id"
-          @click="$router.push(`/searchlist?categoryId=${item.category_id}&search=${item.name}`)"
+          @click="
+            $router.push(
+              `/searchlist?categoryId=${item.category_id}&search=${item.name}`
+            )
+          "
         >
-          <img :src="item.image.external_url" alt="">
+          <img
+            :src="item.image.external_url"
+            alt=""
+          />
           <p>{{ item.name }}</p>
         </div>
       </div>
@@ -41,15 +59,18 @@ import { catagoryGetDetailAPI } from '@/api/category'
 
 export default {
   name: 'CategoryPage',
+
   created () {
     this.getPageDetail()
   },
+
   data () {
     return {
       list: [],
       activeIndex: 0
     }
   },
+
   methods: {
     async getPageDetail () {
       const { data: { list } } = await catagoryGetDetailAPI()
@@ -60,31 +81,35 @@ export default {
 </script>
 
 <style lang="less" scoped>
-// 主题 padding
 .category {
   padding-top: 100px;
   padding-bottom: 50px;
   height: 100vh;
 
   .list-box {
-    display: flex;
     height: 100%;
 
+    display: flex;
+
     .left {
-      overflow: auto;
       width: 85px;
       height: 100%;
       background-color: #f3f3f3;
 
+      overflow: auto;
+
       a {
         display: block;
         height: 45px;
-        line-height: 45px;
-        text-align: center;
+
         color: #444444;
         font-size: 12px;
+        line-height: 45px;
+        text-align: center;
+
         &.active {
           background-color: #fff;
+
           color: #fb442f;
         }
       }
@@ -92,27 +117,32 @@ export default {
 
     .right {
       flex: 1;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: flex-start;
-      align-content: flex-start;
-      overflow: auto;
+
       padding: 10px 0;
       height: 100%;
       background-color: #ffffff;
 
+      overflow: auto;
+
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      align-content: flex-start;
+
       .cate-goods {
         margin-bottom: 10px;
         width: 33.3%;
+
         img {
           display: block;
           margin: 5px auto;
           width: 70px;
           height: 70px;
         }
+
         p {
-          text-align: center;
           font-size: 12px;
+          text-align: center;
         }
       }
     }
@@ -128,7 +158,8 @@ export default {
 .van-search {
   position: fixed;
   top: 46px;
-  width: 100%;
   z-index: 999;
+
+  width: 100%;
 }
 </style>
