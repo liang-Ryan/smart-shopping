@@ -6,12 +6,12 @@ export const userGetImgCodeAPI = () => {
 }
 
 // 短信验证码
-export const userPostCaptchaAPI = (imgCode, imgKey, phoneNumber) => {
+export const userPostCaptchaAPI = (captchaCode, captchaKey, mobile) => {
   return request.post('/captcha/sendSmsCaptcha', {
     form: {
-      captchaCode: imgCode,
-      captchaKey: imgKey,
-      mobile: phoneNumber
+      captchaCode,
+      captchaKey,
+      mobile
     }
   })
 }
