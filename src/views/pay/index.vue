@@ -149,7 +149,7 @@ export default {
 
       // 商品信息
       mode: this.$route.query.mode, // 下单途径
-      obj: JSON.parse(this.$route.query.obj) // 商品信息
+      goodsInfo: JSON.parse(this.$route.query.goodsInfo) // 商品信息
     }
   },
 
@@ -174,7 +174,7 @@ export default {
   methods: {
     // 获取订单信息
     async getOrder () {
-      const { data: { order, personal } } = await payGetOrderAPI(this.mode, this.obj)
+      const { data: { order, personal } } = await payGetOrderAPI(this.mode, this.goodsInfo)
 
       // 收货地址
       this.address = order?.address
@@ -192,9 +192,7 @@ export default {
     async submit () {
       if (!this.affordable) return // 余额判断
 
-      const {
-        data: { orderId, payType }
-      } = await payPostSubmitAPI(this.mode, this.obj, this.remark)
+      const { data: { orderId, payType } } = await payPostSubmitAPI(this.mode, this.goodsInfo, this.remark)
       this.$toast('支付成功')
       this.$router.replace({
         path: '/mypage',

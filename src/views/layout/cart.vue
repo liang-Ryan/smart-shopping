@@ -59,9 +59,9 @@
                 @input="
                   value =>
                     changeGoods({
-                      id: item.goods_id,
-                      num: value,
-                      skuid: item.goods_sku_id
+                      goodsId: item.goods_id,
+                      goodsNum: value,
+                      goodsSkuId: item.goods_sku_id
                     })
                 "
               ></counter>
