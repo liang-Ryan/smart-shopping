@@ -9,9 +9,9 @@
 * vant2 （组件库）
 * axios （网络请求）
 * eslint （代码格式化）
-* babel
+* babel （代码降级兼容）
 * less （样式）
-* postcss-px-to-viewport
+* postcss-px-to-viewport （移动端适配）
 
 ## 首页
 * 二级路由
