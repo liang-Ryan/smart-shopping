@@ -1,15 +1,6 @@
 import request from '@/utils/request'
 
 // 获取搜索商品数据
-export const searchGetListAPI = (obj) => {
-  const { sortType, sortPrice, categoryId, goodsName, page } = obj
-  return request.get('/goods/list', {
-    params: {
-      sortType,
-      sortPrice,
-      categoryId,
-      goodsName,
-      page
-    }
-  })
-}
+export const searchGetListAPI = (obj) => request.get('/goods/list', {
+  params: obj
+})
