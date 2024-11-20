@@ -55,6 +55,7 @@
               </div>
               <counter
                 :value="item.goods_num"
+                :stock="item.goods.stock_total"
                 @input="
                   value =>
                     changeGoods({
