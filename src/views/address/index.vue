@@ -1,11 +1,20 @@
 <template>
   <div class="main-content">
-    <van-nav-bar fixed title="收货地址" left-arrow @click-left="$router.go(-1)" />
+    <van-nav-bar
+      fixed
+      title="收货地址"
+      left-arrow
+      @click-left="$router.go(-1)"
+    />
 
     <!-- 地址主体 -->
     <div class="address-list">
       <van-radio-group v-model="defaultAddressId">
-        <div class="address-item" v-for="item in addressList" :key="item.address_id">
+        <div
+          class="address-item"
+          v-for="item in addressList"
+          :key="item.address_id"
+        >
           <div class="item-top">
             <span>{{ item.name }}</span>
             <span>{{ item.phone }}</span>
@@ -15,22 +24,18 @@
             <div>{{ addressDetail(item) }}</div>
           </div>
 
-          <hr>
+          <hr />
 
           <div class="item-bottom">
-            <van-radio :name="item.address_id" @click="setDefaultAddress(item.address_id)">
+            <van-radio
+              :name="item.address_id"
+              @click="setDefaultAddress(item.address_id)"
+            >
               <span v-html="item.address_id === defaultAddressId ? '默认' : '选择'"></span>
             </van-radio>
 
             <div class="item-function">
-              <span @click="toAddressEdit(
-                item.name,
-                item.phone,
-                item.region.province,
-                item.region.city,
-                item.region.region,
-                item.detail,
-              )"><van-icon name="edit" />编辑</span>
+              <span @click="toAddressEdit(item)"><van-icon name="edit" />编辑</span>
               <span @click="delAddress(item.address_id)"><van-icon name="delete-o" />删除</span>
             </div>
           </div>
@@ -46,21 +51,39 @@
 </template>
 
 <script>
-import { addressPostRemoveAPI, addressGetListAPI, addressGetDefaultIdAPI, addressPostDefaultAPI } from '@/api/address'
+import {
+  addressPostRemoveAPI,
+  addressGetListAPI,
+  addressGetDefaultIdAPI,
+  addressPostDefaultAPI
+} from '@/api/address'
 import { Dialog } from 'vant'
 
 export default {
   name: 'addressPage',
+
   created () {
-    this.getList()
+    this.getAddressList()
     this.getDefaultAddress()
   },
+
   data () {
     return {
       addressList: [],
       defaultAddressId: ''
     }
   },
+
+  computed: {
+    // 拼接详细地址
+    addressDetail () {
+      return (address) => {
+        const { province, city, region } = address.region
+        return province + ' ' + city + ' ' + region + ' ' + address.detail
+      }
+    }
+  },
+
   methods: {
     // 获取默认收货地址
     async getDefaultAddress () {
@@ -69,15 +92,9 @@ export default {
     },
 
     // 获取地址列表
-    async getList () {
+    async getAddressList () {
       const { data: { list } } = await addressGetListAPI()
       this.addressList = list
-    },
-
-    // 拼接详细地址
-    addressDetail (address) {
-      const { province, city, region } = address.region
-      return province + ' ' + city + ' ' + region + ' ' + address.detail
     },
 
     // 修改默认收货地址
@@ -87,14 +104,16 @@ export default {
     },
 
     // 传递编辑地址参数
-    toAddressEdit (name, phone, province, city, region, detail) {
+    toAddressEdit (item) {
+      const { name, phone, region, detail } = item
+
       this.$router.push({
         path: '/addressEdit',
         query: {
-          addressName: name,
-          addressPhone: phone,
-          addressRegion: province + city + region,
-          addressDetail: detail
+          name,
+          phone,
+          area: region.province + region.city + region.region,
+          address: detail
         }
       })
     },
@@ -107,21 +126,9 @@ export default {
         .then(async () => {
           const { message } = await addressPostRemoveAPI(id)
           this.$toast(message)
-          this.getList()
+          this.getAddressList()
         })
-        .catch(() => {
-        })
-    },
-
-    // 返回订单结算页
-    toPay () {
-      this.$router.push({
-        path: '/pay',
-        query: {
-          mode: this.$route.query.mode,
-          obj: JSON.stringify(this.$route.query.obj)
-        }
-      })
+        .catch(() => {})
     }
   }
 }
@@ -133,22 +140,24 @@ export default {
   background-color: rgb(250, 250, 250);
 
   // 地址样式
-  .address-list{
+  .address-list {
     .address-item {
-      padding: 25px;
       margin: 20px;
       border-radius: 11px;
+      padding: 25px;
       background-color: #fff;
-      box-shadow: 0 1px 3px 0 rgba(0,0,0,0.05);
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+
       display: flex;
       flex-direction: column;
       gap: 10px;
 
       .item-top {
+        font-size: 20px;
+
         display: flex;
         align-items: flex-end;
         gap: 10px;
-        font-size: 20px;
       }
 
       .item-content {
@@ -160,9 +169,10 @@ export default {
       }
 
       .item-bottom {
+        font-size: 16px;
+
         display: flex;
         justify-content: space-between;
-        font-size: 16px;
 
         .item-function {
           display: flex;
@@ -177,12 +187,14 @@ export default {
     position: fixed;
     left: 0;
     bottom: 0;
+
     width: 100%;
     height: 46px;
-    line-height: 46px;
-    background: linear-gradient(90deg,#f9211c,#ff6335);
+    background: linear-gradient(90deg, #f9211c, #ff6335);
+
     color: #fff;
+    line-height: 46px;
     text-align: center;
-}
+  }
 }
 </style>
