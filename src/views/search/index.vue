@@ -53,6 +53,7 @@ export default {
   created () {
     this.getLocalSearchHistory()
   },
+
   watch: {
     // 页面后退时重新获取route参数
     $route (to) {
