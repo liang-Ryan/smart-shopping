@@ -4,9 +4,9 @@ import request from '@/utils/request'
 export const addressGetDefaultIdAPI = () => request.get('/address/defaultId')
 
 // 获取地址详情
-export const addressGetDetailAPI = (id) => request.get('/address/detail', {
+export const addressGetDetailAPI = (addressId: number) => request.get('/address/detail', {
   params: {
-    addressId: id
+    addressId
   }
 })
 
@@ -14,11 +14,11 @@ export const addressGetDetailAPI = (id) => request.get('/address/detail', {
 export const addressGetListAPI = () => request.get('/address/list')
 
 // 修改默认收货地址
-export const addressPostDefaultAPI = (id) => request.post('/address/setDefault', {
-  addressId: id
+export const addressPostDefaultAPI = (addressId: number) => request.post('/address/setDefault', {
+  addressId
 })
 
 // 删除收货地址
-export const addressPostRemoveAPI = (id) => request.post('/address/remove', {
-  addressId: id
+export const addressPostRemoveAPI = (addressId: number) => request.post('/address/remove', {
+  addressId
 })

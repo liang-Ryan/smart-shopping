@@ -1,3 +1,5 @@
+import { state } from '@/types/vuex/user'
+
 const userTokenKey = 'smart_shopping_userToken'
 
 // 查询用户信息
@@ -11,7 +13,7 @@ export default {
 
   state () {
     return {
-      userToken: getLocalUserToken(userTokenKey) || {}
+      userToken: getLocalUserToken() || {}
     }
   },
 
@@ -19,7 +21,7 @@ export default {
 
   mutations: {
     // 保存用户信息至本地
-    setLocalUserToken (state) {
+    setLocalUserToken (state: state) {
       localStorage.setItem(userTokenKey, JSON.stringify(state.userToken))
     },
     // 删除本地用户信息
@@ -30,12 +32,12 @@ export default {
 
   actions: {
     // 保存用户信息
-    setUserToken (context, userToken) {
+    setUserToken (context: any, userToken: string) {
       context.state.userToken = userToken
       context.commit('setLocalUserToken')
     },
     // 退出登录
-    resetInfo (context) {
+    resetInfo (context: any) {
       context.commit('cart/setCartList', [], { root: true }) // 重置购物车信息
       context.dispatch('setUserToken', {}) // 重置用户信息
     }

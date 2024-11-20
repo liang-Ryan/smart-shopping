@@ -1,5 +1,13 @@
+import { state } from '@/types/vuex/search'
+
+const searchHistoryKey = 'smart_shopping_searchHistory'
+const getLocalSearchHistory = () => {
+  const result = localStorage.getItem(searchHistoryKey)
+  return result ? JSON.parse(result) : []
+}
+
 // 非空判断
-export const isNull = (str) => {
+export const isNull = (str: string) => {
   return str.trim() === ''
 }
 
@@ -8,7 +16,7 @@ export default {
 
   state () {
     return {
-      searchHistoryKey: 'smart_shopping_searchHistory'
+      searchHistory: getLocalSearchHistory()
     }
   },
 
@@ -16,24 +24,24 @@ export default {
 
   mutations: {
     // 保存搜索历史记录
-    setLocalSearchHistory (state) {
-      localStorage.setItem(state.searchHistoryKey, JSON.stringify(state.searchHistory))
+    setLocalSearchHistory (state: state) {
+      localStorage.setItem(searchHistoryKey, JSON.stringify(state.searchHistory))
     },
     // 查询搜索历史记录
-    getLocalSearchHistory  (state) {
-      const result = localStorage.getItem(state.searchHistoryKey)
+    getLocalSearchHistory  (state: state) {
+      const result = localStorage.getItem(searchHistoryKey)
       state.searchHistory = result ? JSON.parse(result) : []
     },
     // 清空搜索历史记录
-    clearLocalSearchHistory  (state) {
+    clearLocalSearchHistory  (state: state) {
       state.searchHistory = []
-      localStorage.removeItem(state.searchHistoryKey)
+      localStorage.removeItem(searchHistoryKey)
     }
   },
 
   actions: {
     // 添加搜索历史记录
-    addLocalSearchHistory (context, searchContent) {
+    addLocalSearchHistory (context: any, searchContent: string) {
       if (isNull(searchContent)) return // 非空判断
 
       context.commit('getLocalSearchHistory') // 检验搜索历史记录

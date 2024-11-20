@@ -4,7 +4,7 @@ import request from '@/utils/request'
 export const userGetImgCodeAPI = () => request.get('/captcha/image')
 
 // 短信验证码
-export const userPostCaptchaAPI = (captchaCode, captchaKey, mobile) => request.post('/captcha/sendSmsCaptcha', {
+export const userPostCaptchaAPI = (captchaCode: string, captchaKey: string, mobile: string) => request.post('/captcha/sendSmsCaptcha', {
   form: {
     captchaCode,
     captchaKey,
@@ -13,7 +13,7 @@ export const userPostCaptchaAPI = (captchaCode, captchaKey, mobile) => request.p
 })
 
 // 登录验证
-export const userPostLoginAPI = (phoneNumber, msgCode) => request.post('/passport/login', {
+export const userPostLoginAPI = (phoneNumber: string, msgCode: string) => request.post('/passport/login', {
   form: {
     isParty: false,
     mobile: phoneNumber,

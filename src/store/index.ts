@@ -12,7 +12,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: { },
   getters: {
-    token (theState) {
+    token (theState: any) {
       return theState.user.userToken.token
     }
   },

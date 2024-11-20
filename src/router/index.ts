@@ -3,22 +3,22 @@ import VueRouter from 'vue-router'
 // 其他组件
 import store from '@/store'
 // 一级页面
-import Layout from '@/views/layout'
+import Layout from '@/views/layout/index.vue'
 // 二级页面
-import Home from '@/views/layout/home'
-import Category from '@/views/layout/category'
-import Cart from '@/views/layout/cart'
-import User from '@/views/layout/user'
+import Home from '@/views/layout/home.vue'
+import Category from '@/views/layout/category.vue'
+import Cart from '@/views/layout/cart.vue'
+import User from '@/views/layout/user.vue'
 
 // 一级页面 异步组件
-const Login = () => import('@/views/login')
-const Search = () => import('@/views/search')
+const Login = () => import('@/views/login/index.vue')
+const Search = () => import('@/views/search/index.vue')
 const SearchList = () => import('@/views/search/searchResult.vue')
-const Pay = () => import('@/views/pay')
-const Address = () => import('@/views/address')
-const AddressEdit = () => import('@/views/address/edit')
-const Detial = () => import('@/views/detail')
-const Order = () => import('@/views/order')
+const Pay = () => import('@/views/pay/index.vue')
+const Address = () => import('@/views/address/index.vue')
+const AddressEdit = () => import('@/views/address/edit.vue')
+const Detial = () => import('@/views/detail/index.vue')
+const Order = () => import('@/views/order/index.vue')
 
 Vue.use(VueRouter)
 
