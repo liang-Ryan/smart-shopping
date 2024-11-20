@@ -16,7 +16,7 @@
         <van-icon name="logistics" />
       </div>
 
-      <div v-if="address">
+      <div v-if="Object.keys(address).length !== 0">
         <div>
           <span>{{ address.name }}</span>
           <span>{{ address.phone }}</span>
@@ -174,9 +174,7 @@ export default {
   methods: {
     // 获取订单信息
     async getOrder () {
-      const {
-        data: { order, personal }
-      } = await payGetOrderAPI(this.mode, this.obj)
+      const { data: { order, personal } } = await payGetOrderAPI(this.mode, this.obj)
 
       // 收货地址
       this.address = order?.address
