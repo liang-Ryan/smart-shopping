@@ -360,7 +360,7 @@ export default {
 
       // 加入购物车
       if (type === '加入购物车') {
-        const { data, message } = await cartPostAddAPI(...Object.values(query))
+        const { data, message } = await cartPostAddAPI(query)
         this.cartTotal = data.cartTotal
         this.$toast(message)
         this.showPaySheet = false
@@ -372,7 +372,7 @@ export default {
           path: '/pay',
           query: {
             mode: 'buyNow',
-            obj: JSON.stringify(query)
+            goodsInfo: JSON.stringify(query)
           }
         })
       }
