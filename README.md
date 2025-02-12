@@ -13,8 +13,8 @@
 * postcss-px-to-viewport （移动端适配）
 
 ### 调试
-指令：npm run serve
-账号：13111111111
+指令：npm run serve  
+账号：13111111111  
 短信验证码：246810
 
 
